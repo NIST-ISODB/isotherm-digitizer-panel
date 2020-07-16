@@ -1,0 +1,12 @@
+bokeh~=2.1
+#jsmol-bokeh-extension>=0.2.1 # by ltalirz
+panel~=0.9
+requests
+requests_cache
+#pandas
+#ipython
+#notebook
+#crossrefapi
+#python-dateutil
+#ase
+#manage-crystal #by danieleongari
