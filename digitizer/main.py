@@ -7,6 +7,7 @@ import json
 from . import ValidationError
 from .config import QUANTITIES
 from .adsorbates import Adsorbates
+from .adsorbents import material_ID
 from .validate import prepare_isotherm_dict
 
 pn.extension()
