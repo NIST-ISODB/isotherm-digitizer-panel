@@ -9,5 +9,5 @@ pip install -r requirements.txt
 ## Local testing
 
 ```
-panel serve digitizer --dev
+panel serve digitizer --dev digitizer/*.py
 ```

@@ -1,86 +1,101 @@
 import panel as pn
 import panel.widgets as pw
+import bokeh.models.widgets as bw
+from io import StringIO
+import json
 
-from .config import MATERIALS_LIST
+from . import ValidationError
+from .config import QUANTITIES
+from .adsorbates import Adsorbates
+from .validate import prepare_isotherm_dict
 
 pn.extension()
 
-inp_doi = pw.TextInput(name='Article DOI', placeholder="10.1021/jacs.9b01891")
-inp_temperature = pw.TextInput(name='Temperature')
-
-class AdsorbentSingle():
-    """Input form for describing one adsorbent."""
-    def __init__(self):
-        self.show_form = False
-
-        self.inp_name = pw.AutocompleteInput(name='Adsorbent', options=MATERIALS_LIST)
-
-        self.btn_add = pw.Button(name='+', button_type='primary')
-        self.btn_add.on_click(self.on_click_toggle)
-
-        self.inp_refcode = pw.TextInput(name='Refcode')
-        self.column = pn.Column()
-        self.update()
-        
-    def on_click_toggle(self, event):
-        """Toggle visibility of form."""
-        self.show_form = not self.show_form
-        self.update()
-        
-    def update(self):
-        #self.column.clear()
-        if not self.show_form:
-            self.column.append(pn.Row(self.inp_name, self.btn_add))
-        else:
-            self.column.append(
-                pn.Row(self.inp_name, self.btn_add),
-                self.inp_name,
-                self.inp_refcode,
-            )
-
-    @property
-    def adsorbent_dict(self):
-        """Dictionary with adsorbent info"""
-        pass
-
-
-
-btn_submit = pn.widgets.Button(name='Submit', button_type='primary')
-
-def on_click_submit(event):
-    """Validate form contents."""
-    data = {}
+class IsothermSubmissionForm():
     
-    try:
-        data['temperature'] = int(inp_temperature)
-    except Exception as e:
-        inp_temperature.warning(str(e))
-        btn_submit.button_type = 'warning'
-        #import pdb; pdb.set_trace()
-        inp_temperature.warning = str(e)
-        inp_temperature.message = str(e)
+    def __init__(self):
+        self.required_inputs = []
+
+        # isotherm metadata
+        self.inp_doi = pw.TextInput(name='Article DOI', placeholder="10.1021/jacs.9b01891")
+        self.inp_temperature = pw.TextInput(name='Temperature', placeholder='303')
+        self.inp_adsorbent = pw.AutocompleteInput(name='Adsorbent Material', options=QUANTITIES['adsorbents']['names'], placeholder='Zeolite 5A')
+        self.inp_isotherm_type = pw.Select(name='Isotherm type', options=QUANTITIES['isotherm_type']['names'])
+        self.inp_measurement_type = pw.Select(name='Measurement type', options=QUANTITIES['measurement_type']['names'])
+        self.inp_pressure_scale = pw.Checkbox(name='Logarithmic pressure scale')
+        self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data', placeholder='#pressure,composition1,adsorption1,...,total_adsorption(opt)\n1,2,3,4')
+    
+        # units metadata
+        self.inp_pressure_units = pw.Select(name='Pressure units', options=QUANTITIES['pressure_units']['names'])
+        self.inp_adsorption_units = pw.AutocompleteInput(name='Adsorption Units', options=QUANTITIES['adsorption_units']['names'], placeholder='mmol/g')
+        self.inp_composition_type = pw.Select(name='Composition type', options=QUANTITIES['composition_type']['names'])
+        self.inp_concentration_units = pw.AutocompleteInput(name='Concentration Units', options=QUANTITIES['concentration_units']['names'], placeholder='mmol/g')
         
-btn_submit.on_click(on_click_submit)
+        # digitizer info
+        self.inp_source_type = pw.TextInput(name='Source type', placeholder="Figure 1")
+        self.inp_digitizer = pw.TextInput(name='Digitizer', placeholder="Your full name")
+        
+        # buttons
+        self.btn_download = pn.widgets.FileDownload(filename='data.json', button_type='primary', callback=self.on_click_download)
+        # btn_download.on_click(on_click_download)
+        self.btn_prefill = pn.widgets.Button(name='Prefill', button_type='primary')
+        self.btn_prefill.on_click(self.on_click_prefill)
+        self.out_info = bw.PreText(text='Press download to download json')
+        self.inp_adsorbates = Adsorbates(required_inputs=self.required_inputs)  # needs to add itself to required_inputs
 
+        # Handle required inputs
+        self.required_inputs += [self.inp_doi, self.inp_adsorbent, self.inp_temperature, self.inp_isotherm_data,
+                    self.inp_pressure_units,
+                    self.inp_adsorption_units, self.inp_composition_type, self.inp_source_type, self.inp_digitizer]
+        for inp in self.required_inputs:
+            inp.css_classes = ['required']
+        
+    def on_click_download(self):
+        """Download JSON file."""
+        self.out_info.text = ''
+    
+        try:
+            data = prepare_isotherm_dict(self)
+        except (ValidationError, ValueError) as  e:
+            self.btn_download.button_type = 'warning'
+            self.out_info.text = str(e)
+            raise
+    
+        return StringIO(json.dumps(data, indent=4))
 
-column = pn.Column(
-    pn.pane.HTML("""<h2>Add Paper</h2>"""),
-    inp_doi,
-    #pn.Row(inp_doi, btn_doi),
-    inp_temperature,
-    AdsorbentSingle().column,
-    btn_submit,
-    #inp_title,
-    #inp_year,
-    #inp_reference,
-    #inp_paper_id,
-    #btn_add_paper,
-)
-column.servable()
+    def on_click_prefill(self, event):
+        """Prefill form for testing purposes."""
+        for inp in self.required_inputs:
+            try:
+                inp.value = inp.placeholder
+            except AttributeError:
+                # select fields have no placeholder (but are currently pre-filled)
+                pass
+    
+    @property
+    def layout(self):
+        """Return form layout."""
+        return pn.Column(
+            pn.pane.HTML("""<h2>Isotherm Metadata</h2>"""),
+            self.inp_doi,
+            self.inp_adsorbent,
+            self.inp_temperature,
+            self.inp_adsorbates.column,
+            self.inp_isotherm_type,
+            self.inp_measurement_type,
+            self.inp_pressure_scale,
+            self.inp_isotherm_data,
+            pn.pane.HTML("""<h2>Units</h2>"""),
+            self.inp_pressure_units,
+            self.inp_adsorption_units,
+            self.inp_composition_type,
+            self.inp_concentration_units,
+            pn.pane.HTML("""<h2>Digitization</h2>"""),
+            self.inp_source_type,
+            self.inp_digitizer,
+            pn.Row(self.btn_download, self.btn_prefill),
+            self.out_info,
+        )
 
-#gspec = pn.GridSpec(sizing_mode='stretch_both', max_width=1000, max_height=300)
-#gspec[0, 0] = explorer.param
-#gspec[:2, 1:4] = explorer.plot
-#gspec[1, 0] = explorer.msg
-#
-#gspec.servable()
+form = IsothermSubmissionForm()
+form.layout.servable()
