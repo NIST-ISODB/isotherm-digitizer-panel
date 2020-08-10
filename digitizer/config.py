@@ -15,8 +15,7 @@ QUANTITY_API_MAPPING = {
     'pressure_units': '/pressure-unit-lookup.json',
     'adsorption_units': '/adsorption-unit-lookup.json',
     'measurement_type': '/category-type-lookup.json',
-    #'concentration_units': '/concentration-type-lookup.json',
-    'concentration_units': '/composition-type-lookup.json',
+    'concentration_units': '/concentration-unit-lookup.json',
     'composition_type': '/composition-type-lookup.json',
 }
 
