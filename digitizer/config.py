@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Configuration, including options fetched from ISDB API.
 """
@@ -21,10 +22,10 @@ QUANTITY_API_MAPPING = {
 
 QUANTITIES = {}
 for quantity, url in QUANTITY_API_MAPPING.items():
-    json_data =  requests.get(BASE_URL + url).json()
+    json_data = requests.get(BASE_URL + url).json()
     QUANTITIES[quantity] = {
         'json': json_data,
-        'names': [ m['name'] for m in json_data ],
+        'names': [m['name'] for m in json_data],
     }
 
 
@@ -34,4 +35,4 @@ def find_by_name(name, json):
         if q_json['name'] == name:
             return q_json
 
-    raise ValueError("JSON for {} not found.".format(name))
+    raise ValueError('JSON for {} not found.'.format(name))

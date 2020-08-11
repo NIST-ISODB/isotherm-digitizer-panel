@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 """Prepare JSON output."""
-from .config import find_by_name, QUANTITIES
 from io import StringIO
 import numpy as np
+from .config import find_by_name, QUANTITIES
 from . import ValidationError
+
 
 def prepare_isotherm_dict(form):
     """Validate form contents and prepare JSON.
@@ -26,21 +28,28 @@ def prepare_isotherm_dict(form):
 
     # Fill data
     data['DOI'] = form.inp_doi.value
-    data['adsorbent'] = find_by_name(form.inp_adsorbent.value, QUANTITIES['adsorbents']['json'])
+    data['adsorbent'] = find_by_name(form.inp_adsorbent.value,
+                                     QUANTITIES['adsorbents']['json'])
     try:
         data['temperature'] = int(form.inp_temperature.value)
-    except Exception as e:
+    except Exception:
         raise ValidationError('Could not convert temperature to int.')
-    adsorbate_list = [ a.inp_name.value for a in form.inp_adsorbates ]
+    adsorbate_list = [a.inp_name.value for a in form.inp_adsorbates]
     n_adsorbates = len(adsorbate_list)
-    data['adsorbates'] = [ find_by_name(name, QUANTITIES['adsorbates']['json']) for name in adsorbate_list]
+    data['adsorbates'] = [
+        find_by_name(name, QUANTITIES['adsorbates']['json'])
+        for name in adsorbate_list
+    ]
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['measurement_type'] = form.inp_measurement_type.value
 
     data['isotherm_data'] = []
-    isotherm_pressures = np.genfromtxt(StringIO(form.inp_isotherm_data.value), delimiter=',', comments='#')
-    isotherm_pressures = np.array(isotherm_pressures, ndmin=2)  # deal with case of single data row
-    n_rows_no_total = 1 + 2*n_adsorbates
+    isotherm_pressures = np.genfromtxt(StringIO(form.inp_isotherm_data.value),
+                                       delimiter=',',
+                                       comments='#')
+    isotherm_pressures = np.array(isotherm_pressures,
+                                  ndmin=2)  # deal with case of single data row
+    n_rows_no_total = 1 + 2 * n_adsorbates
     n_rows_total = n_rows_no_total + 1
     for pressure in isotherm_pressures:
         if len(pressure) == n_rows_no_total:
@@ -49,14 +58,13 @@ def prepare_isotherm_dict(form):
             has_total_pressure = True
         else:
             raise ValidationError('Expected {} or {} columns for pressure point "{}", found {}'. \
-                             format(n_rows_no_total, n_rows_no_total, str(pressure), len(pressure)), )
+                             format(n_rows_no_total, n_rows_total, str(pressure), len(pressure)), )
 
         species_data = [{
-                'InChIKey': data['adsorbates'][i]['InChIKey'],
-                'composition': pressure[1+2*i],
-                'adsorption': pressure[2 + 2 * i],
-            } for i in range(n_adsorbates)]
-
+            'InChIKey': data['adsorbates'][i]['InChIKey'],
+            'composition': pressure[1 + 2 * i],
+            'adsorption': pressure[2 + 2 * i],
+        } for i in range(n_adsorbates)]
 
         point = {
             'pressure': pressure[0],
@@ -66,7 +74,7 @@ def prepare_isotherm_dict(form):
             point['total_pressure'] = pressure[-1]
         else:
             pass
-            # TODO
+            # TODO  # pylint: disable=fixme
         data['isotherm_data'].append(point)
 
     data['pressureUnits'] = form.inp_pressure_units.value

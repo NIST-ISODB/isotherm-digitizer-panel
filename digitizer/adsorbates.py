@@ -1,19 +1,23 @@
+# -*- coding: utf-8 -*-
 """Dynamic list of adsorbates."""
 import panel as pn
 import panel.widgets as pw
 from .config import QUANTITIES
 
+
 class Adsorbate():
     """Input form for describing adsorbates."""
-
     def __init__(self, parent):
         """Initialize single adsorbent row.
 
         :param parent: Adsorbates instance
         """
         self.parent = parent
-        self.inp_name = pw.AutocompleteInput(name='Adorbate Gas/Fluid', placeholder='Methane',
-                                             options=QUANTITIES['adsorbates']['names'], css_classes = ['required'])
+        self.inp_name = pw.AutocompleteInput(
+            name='Adorbate Gas/Fluid',
+            placeholder='Methane',
+            options=QUANTITIES['adsorbates']['names'],
+            css_classes=['required'])
         self.btn_add = pw.Button(name='+', button_type='primary')
         self.btn_add.on_click(self.on_click_add)
         self.btn_remove = pw.Button(name='-', button_type='primary')
@@ -21,24 +25,26 @@ class Adsorbate():
         #self.inp_refcode = pw.TextInput(name='Refcode')
         #self.row = pn.Row(self.inp_name, self.btn_add, self.btn_remove)
         self.row = pn.GridSpec(height=50)
-        self.row[0,0:8] = self.inp_name
-        self.row[0,8] = self.btn_add
-        self.row[0,9] = self.btn_remove
+        self.row[0, 0:8] = self.inp_name
+        self.row[0, 8] = self.btn_add
+        self.row[0, 9] = self.btn_remove
 
-    def on_click_add(self, event):
+    def on_click_add(self, event):  # pylint: disable=unused-argument
+        """Add new adsorbate."""
         self.parent.add(Adsorbate(parent=self.parent))
 
-    def on_click_remove(self, event):
+    def on_click_remove(self, event):  # pylint: disable=unused-argument
+        """Remove this adsorbent from the list."""
         self.parent.remove(self)
 
     @property
     def dict(self):
         """Dictionary with adsorbate info"""
-        return { 'name': self.inp_name.value }
+        return {'name': self.inp_name.value}
+
 
 class Adsorbates():
     """List of all adsorbates"""
-
     def __init__(self, adsorbates=None, required_inputs=None):
         """
         Create dynamic list of adsorbates.
@@ -56,12 +62,13 @@ class Adsorbates():
 
     @property
     def column(self):
+        """Panel column for visualization"""
         return self._column
 
     @property
     def dict(self):
         """Dictionary with adsorbate info"""
-        return [ a.dict for a in self ]
+        return [a.dict for a in self]
 
     def add(self, adsorbate):
         """Add new adsorbate."""
