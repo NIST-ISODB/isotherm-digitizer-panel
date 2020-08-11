@@ -5,19 +5,35 @@ import panel.widgets as pw
 from .config import QUANTITIES
 
 
-class Adsorbate():
+class Adsorbate():  # pylint: disable=too-few-public-methods
     """Input form for describing adsorbates."""
-    def __init__(self, parent):
+    def __init__(self):
         """Initialize single adsorbent row.
 
         :param parent: Adsorbates instance
         """
-        self.parent = parent
         self.inp_name = pw.AutocompleteInput(
             name='Adorbate Gas/Fluid',
             placeholder='Methane',
             options=QUANTITIES['adsorbates']['names'],
             css_classes=['required'])
+        self.row = pn.Row(self.inp_name)
+
+    @property
+    def dict(self):
+        """Dictionary with adsorbate info"""
+        return {'name': self.inp_name.value}
+
+
+class AdsorbateWithControls(Adsorbate):
+    """Input form for describing adsorbates with controls to add/remove them."""
+    def __init__(self, parent):
+        """Initialize single adsorbent row.
+
+        :param parent: Adsorbates instance
+        """
+        super().__init__()
+        self.parent = parent
         self.btn_add = pw.Button(name='+', button_type='primary')
         self.btn_add.on_click(self.on_click_add)
         self.btn_remove = pw.Button(name='-', button_type='primary')
@@ -31,26 +47,25 @@ class Adsorbate():
 
     def on_click_add(self, event):  # pylint: disable=unused-argument
         """Add new adsorbate."""
-        self.parent.add(Adsorbate(parent=self.parent))
+        self.parent.add(AdsorbateWithControls(parent=self.parent))
 
     def on_click_remove(self, event):  # pylint: disable=unused-argument
         """Remove this adsorbent from the list."""
         self.parent.remove(self)
 
-    @property
-    def dict(self):
-        """Dictionary with adsorbate info"""
-        return {'name': self.inp_name.value}
-
 
 class Adsorbates():
     """List of all adsorbates"""
-    def __init__(self, adsorbates=None, required_inputs=None):
+    def __init__(self,
+                 adsorbates=None,
+                 required_inputs=None,
+                 show_controls=True):
         """
         Create dynamic list of adsorbates.
 
         :param adsorbates: List of adsorbate entities to prepopulate (optional)
         :param required_inputs: List of required inputs to keep updated (optional)
+        :param show_controls: Whether to display controls for addin/removing adsorbents.
         """
         self._adsorbates = adsorbates or []
         self._column = pn.Column(objects=[a.row for a in self])
@@ -58,7 +73,10 @@ class Adsorbates():
 
         # Add one adsorbate
         if not self._adsorbates:
-            self.add(Adsorbate(parent=self))
+            if show_controls:
+                self.add(AdsorbateWithControls(parent=self))
+            else:
+                self.add(Adsorbate())
 
     @property
     def column(self):

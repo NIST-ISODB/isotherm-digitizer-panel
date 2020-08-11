@@ -8,9 +8,9 @@ import panel.widgets as pw
 import bokeh.models.widgets as bw
 
 from . import ValidationError
-from .config import QUANTITIES
+from .config import QUANTITIES, SINGLE_COMPONENT_EXAMPLE, MULTI_COMPONENT_EXAMPLE
 from .adsorbates import Adsorbates
-from .validate import prepare_isotherm_dict
+from .parse import prepare_isotherm_dict
 from .plot import IsothermPlot
 
 pn.extension()
@@ -18,12 +18,14 @@ pn.extension()
 
 class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
     """HTML form for uploading new isotherms."""
-    def __init__(self, plot):  # pylint: disable=redefined-outer-name
+    def __init__(self, plot, mode='multi-component'):  # pylint: disable=redefined-outer-name
         """
 
         :param plot: IsothermPlot instance for validation of results.
+        :param mode: Either 'multi-component' or 'single-component'
         """
         self.plot = plot
+        self.mode = mode
         self.required_inputs = []
 
         # isotherm metadata
@@ -42,17 +44,11 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
             options=QUANTITIES['measurement_type']['names'])
         self.inp_pressure_scale = pw.Checkbox(
             name='Logarithmic pressure scale')
-        self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data', height=200, placeholder=\
-"""#pressure,composition1,adsorption1,...,total_adsorption(opt)
-0.310676,1,0.019531,0.019531
-5.13617,1,0.000625751,0.000625751
-7.93711,1,0.0204602,0.0204602
-12.4495,1,0.06066,0.06066
-30.0339,1,0.159605,0.159605
-44.8187,1,0.200392,0.200392
-58.3573,1,0.270268,0.270268
-66.2941,1,0.300474,0.300474
-72.9855,1,0.340276,0.340276""")
+        self.inp_isotherm_data = pw.TextAreaInput(
+            name='Isotherm Data',
+            height=200,
+            placeholder=MULTI_COMPONENT_EXAMPLE
+            if self.mode == 'multi-component' else SINGLE_COMPONENT_EXAMPLE)
 
         # units metadata
         self.inp_pressure_units = pw.Select(
@@ -84,7 +80,8 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         self.out_info = bw.PreText(
             text='Press "Plot" in order to download json.')
         self.inp_adsorbates = Adsorbates(
-            required_inputs=self.required_inputs
+            required_inputs=self.required_inputs,
+            show_controls=mode == 'multi-component',
         )  # needs to add itself to required_inputs
         self.btn_plot = pn.widgets.Button(name='Plot', button_type='primary')
         self.btn_plot.on_click(self.on_click_plot)
@@ -99,33 +96,8 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         for inp in self.required_inputs:
             inp.css_classes = ['required']
 
-    def on_click_prefill(self, event):  # pylint: disable=unused-argument
-        """Prefill form for testing purposes."""
-        for inp in self.required_inputs:
-            try:
-                inp.value = inp.placeholder
-            except AttributeError:
-                # select fields have no placeholder (but are currently pre-filled)
-                pass
-
-    def on_click_plot(self, event):  # pylint: disable=unused-argument
-        """Plot isotherm."""
-        self.out_info.text = ''
-
-        try:
-            data = prepare_isotherm_dict(self)
-        except (ValidationError, ValueError) as exc:
-            self.btn_plot.button_type = 'warning'
-            self.out_info.text = str(exc)
-            raise
-
-        self.plot.update(data)
-        tabs.active = 2
-
-    @property
-    def layout(self):
-        """Return form layout."""
-        return pn.Column(
+        # create layout
+        self.layout = pn.Column(
             pn.pane.HTML("""<h2>Isotherm Metadata</h2>"""),
             self.inp_doi,
             self.inp_adsorbent,
@@ -147,12 +119,46 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
             self.out_info,
         )
 
+    def on_click_prefill(self, event):  # pylint: disable=unused-argument
+        """Prefill form for testing purposes."""
+        for inp in self.required_inputs:
+            try:
+                inp.value = inp.placeholder
+            except AttributeError:
+                # select fields have no placeholder (but are currently pre-filled)
+                pass
+
+    def on_click_plot(self, event):  # pylint: disable=unused-argument
+        """Plot isotherm."""
+        try:
+            data = prepare_isotherm_dict(self)
+        except (ValidationError, ValueError) as exc:
+            self.btn_plot.button_type = 'warning'
+            self.log(str(exc))
+            raise
+
+        self.plot.update(data)
+        tabs.active = 2
+
+    def log(self, msg):
+        """Print log message.
+
+        Note: For some reason, simply updating the .text property of the PreText widget stopped working after moving
+        to tabs (TODO: open issue on panel for this).
+        """
+        #self.layout.remove(self.out_info)
+        self.layout.pop(-1)
+        self.out_info.text = msg
+        self.layout.append(self.out_info)
+
 
 plot = IsothermPlot()
 
 tabs = pn.Tabs(
-    #("Single-component", IsothermSubmissionForm(plot=plot).layout),
+    ('Single-component',
+     IsothermSubmissionForm(plot=plot, mode='single-component').layout),
     ('Multi-component', IsothermSubmissionForm(plot=plot).layout),
     ('Plot', plot.layout),
 )
+
 tabs.servable()
