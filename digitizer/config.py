@@ -25,7 +25,7 @@ for quantity, url in QUANTITY_API_MAPPING.items():
     json_data = requests.get(BASE_URL + url).json()
     QUANTITIES[quantity] = {
         'json': json_data,
-        'names': [m['name'] for m in json_data],
+        'names': ['UNKNOWN'] + [m['name'] for m in json_data],
     }
 
 

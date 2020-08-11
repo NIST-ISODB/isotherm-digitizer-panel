@@ -53,8 +53,7 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         # units metadata
         self.inp_pressure_units = pw.Select(
             name='Pressure units',
-            options=QUANTITIES['pressure_units']['names'],
-            default='bar')
+            options=QUANTITIES['pressure_units']['names'])
         self.inp_adsorption_units = pw.AutocompleteInput(
             name='Adsorption Units',
             options=QUANTITIES['adsorption_units']['names'],
