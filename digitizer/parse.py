@@ -25,18 +25,25 @@ def prepare_isotherm_dict(form):
             valid = False
     if not valid:
         raise ValidationError(msg)
-    data['adsorbent'] = find_by_name(form.inp_adsorbent.value,
-                                     QUANTITIES['adsorbents']['json'])
+    adsorbent_json = find_by_name(form.inp_adsorbent.value,
+                                  QUANTITIES['adsorbents']['json'])
+    data['adsorbent'] = {
+        key: adsorbent_json[key]
+        for key in ['name', 'hashkey']
+    }
     try:
         data['temperature'] = int(form.inp_temperature.value)
     except Exception:
         raise ValidationError('Could not convert temperature to int.')
 
-    adsorbate_list = [a.inp_name.value for a in form.inp_adsorbates]
-    data['adsorbates'] = [
-        find_by_name(name, QUANTITIES['adsorbates']['json'])
-        for name in adsorbate_list
+    adsorbates_json = [
+        find_by_name(a.inp_name.value, QUANTITIES['adsorbates']['json'])
+        for a in form.inp_adsorbates
     ]
+    data['adsorbates'] = [{
+        key: adsorbate[key]
+        for key in ['name', 'InChIKey']
+    } for adsorbate in adsorbates_json]
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['measurement_type'] = form.inp_measurement_type.value
 
