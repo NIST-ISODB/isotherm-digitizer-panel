@@ -107,7 +107,7 @@ class IsothermPlot():
 
     def on_click_add(self, event):  # pylint: disable=unused-argument
         """Add isotherm to submission."""
-        self.submissions.add(self.isotherm)
+        self.submissions.append(self.isotherm)
 
     @property
     def layout(self):

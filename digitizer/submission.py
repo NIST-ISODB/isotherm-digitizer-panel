@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Store stack of submissions"""
 from io import BytesIO
+import collections
 import uuid
 import os
 import zipfile
@@ -38,11 +39,15 @@ class Isotherm():
         return row
 
 
-class Submissions():
-    """Stores stack of isotherms for combined submission."""
+class Submissions(collections.UserList):  # pylint: disable=R0901
+    """Stores stack of isotherms for combined submission.
+
+    Note: This class inherits from collections.UserList for automatic implementation of len() and the subscript
+         operator. The internal list is stored in self.data.
+    """
     def __init__(self):
         """Initialize empty submission."""
-        self._isotherms = []
+        super().__init__()
 
         self.btn_submit = pw.Button(name='Submit', button_type='primary')
         self.btn_submit.on_click(self.on_click_submit)
@@ -60,19 +65,19 @@ class Submissions():
         """Display isotherms."""
         return self._column
 
-    def add(self, isotherm):
+    def append(self, isotherm):  # pylint: disable=W0221
         """Add isotherm to submission."""
         isotherm.parent = self
-        self._isotherms.append(isotherm)
+        self.data.append(isotherm)
 
         if len(self) == 1:
             # we now need submit buttons
             self._column.insert(-1, self._submit_btns)
         self._column.insert(-2, isotherm.row)
 
-    def remove(self, isotherm):
+    def remove(self, isotherm):  # pylint: disable=W0221
         """Remove isotherm from list."""
-        self._isotherms.remove(isotherm)
+        self.data.remove(isotherm)
 
         if len(self) == 0:
             # we should remove submit buttons
@@ -112,13 +117,3 @@ class Submissions():
     def on_click_download(self):
         """Download zip file."""
         return self.get_zip_file()
-
-    def __len__(self):
-        return len(self._isotherms)
-
-    def __iter__(self):
-        for elem in self._isotherms:
-            yield elem
-
-    def __getitem__(self, item):
-        return self._isotherms[item]

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Upload forms"""
+import collections
 import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
@@ -9,15 +10,7 @@ from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
 
-
-class FigureImage():  # pylint: disable=too-few-public-methods
-    """Container for figure image.
-
-    Optionally uploaded together with isotherm.
-    """
-    def __init__(self, data, filename):
-        self.data = data
-        self.filename = filename
+FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
 
 class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attributes

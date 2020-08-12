@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Dynamic list of adsorbates."""
+import collections
 import panel as pn
 import panel.widgets as pw
 from .config import QUANTITIES
@@ -24,7 +25,7 @@ class Adsorbate():  # pylint: disable=too-few-public-methods
 
 
 class AdsorbateWithControls(Adsorbate):
-    """Input form for describing adsorbates with controls to add/remove them."""
+    """Input form for describing adsorbates with controls to append/remove them."""
     def __init__(self, parent):
         """Initialize single adsorbent row.
 
@@ -45,14 +46,14 @@ class AdsorbateWithControls(Adsorbate):
 
     def on_click_add(self, event):  # pylint: disable=unused-argument
         """Add new adsorbate."""
-        self.parent.add(AdsorbateWithControls(parent=self.parent))
+        self.parent.append(AdsorbateWithControls(parent=self.parent))
 
     def on_click_remove(self, event):  # pylint: disable=unused-argument
         """Remove this adsorbent from the list."""
         self.parent.remove(self)
 
 
-class Adsorbates():
+class Adsorbates(collections.UserList):  # pylint: disable=R0901
     """List of all adsorbates"""
     def __init__(self, adsorbates=None, show_controls=True):
         """
@@ -60,16 +61,20 @@ class Adsorbates():
 
         :param adsorbates: List of adsorbate entities to prepopulate (optional)
         :param show_controls: Whether to display controls for addin/removing adsorbents.
+
+        Note: This class inherits from collections.UserList for automatic implementation of len() and the subscript
+         operator. The internal list is stored in self.data.
         """
-        self._adsorbates = adsorbates or []
+        super().__init__()
+        self.data = adsorbates or []
         self._column = pn.Column(objects=[a.row for a in self])
 
         # Add one adsorbate
-        if not self._adsorbates:
+        if not self.data:
             if show_controls:
-                self.add(AdsorbateWithControls(parent=self))
+                self.append(AdsorbateWithControls(parent=self))
             else:
-                self.add(Adsorbate())
+                self.append(Adsorbate())
 
     @property
     def column(self):
@@ -81,19 +86,12 @@ class Adsorbates():
         """List of inputs"""
         return [a.inp_name for a in self]
 
-    def add(self, adsorbate):
+    def append(self, adsorbate):  # pylint: disable=W0221
         """Add new adsorbate."""
-        self._adsorbates.append(adsorbate)
+        self.data.append(adsorbate)
         self._column.append(adsorbate.row)
 
-    def remove(self, adsorbate):
+    def remove(self, adsorbate):  # pylint: disable=W0221
         """Remove adsorbate from list."""
-        self._adsorbates.remove(adsorbate)
+        self.data.remove(adsorbate)
         self._column.remove(adsorbate.row)
-
-    def __iter__(self):
-        for elem in self._adsorbates:
-            yield elem
-
-    def __len__(self):
-        return len(self._adsorbates)
