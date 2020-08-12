@@ -56,10 +56,15 @@ def prepare_isotherm_dict(form):
         for pressure in measurements
     ]
     data['pressureUnits'] = form.inp_pressure_units.value
+    if form.inp_saturation_pressure.value:
+        data['saturationPressure'] = form.inp_saturation_pressure.value
     data['adsorptionUnits'] = form.inp_adsorption_units.value
-    data['compositionType'] = form.inp_composition_type.value
-    data['concentrationUnits'] = ''
+    if form.__class__.__name__ == 'IsothermMultiComponentForm':
+        data['compositionType'] = form.inp_composition_type.value
+        data['concentrationUnits'] = form.inp_concentration_units.value
     data['articleSource'] = form.inp_source_type.value
+    if 'table' in form.inp_source_type.value.lower():
+        data['tabular'] = True
     data['digitizer'] = form.inp_digitizer.value
 
     return data
@@ -77,7 +82,7 @@ def parse_pressure_row(pressure, adsorbates, form):
     n_rows_no_total = 1 + 2 * n_adsorbates
     n_rows_total = n_rows_no_total + 1
 
-    if form.mode == 'single-component':
+    if form.__class__.__name__ == 'IsothermSingleComponentForm':
         if len(pressure) != 2:
             raise ValidationError('Expected 2 columns for pressure point "{}", found {}'. \
                                   format(str(pressure), len(pressure)), )

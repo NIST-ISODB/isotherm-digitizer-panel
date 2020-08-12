@@ -56,20 +56,15 @@ class AdsorbateWithControls(Adsorbate):
 
 class Adsorbates():
     """List of all adsorbates"""
-    def __init__(self,
-                 adsorbates=None,
-                 required_inputs=None,
-                 show_controls=True):
+    def __init__(self, adsorbates=None, show_controls=True):
         """
         Create dynamic list of adsorbates.
 
         :param adsorbates: List of adsorbate entities to prepopulate (optional)
-        :param required_inputs: List of required inputs to keep updated (optional)
         :param show_controls: Whether to display controls for addin/removing adsorbents.
         """
         self._adsorbates = adsorbates or []
         self._column = pn.Column(objects=[a.row for a in self])
-        self._required_inputs = required_inputs
 
         # Add one adsorbate
         if not self._adsorbates:
@@ -84,23 +79,19 @@ class Adsorbates():
         return self._column
 
     @property
-    def dict(self):
-        """Dictionary with adsorbate info"""
-        return [a.dict for a in self]
+    def inputs(self):
+        """List of inputs"""
+        return [a.inp_name for a in self]
 
     def add(self, adsorbate):
         """Add new adsorbate."""
         self._adsorbates.append(adsorbate)
         self._column.append(adsorbate.row)
-        if self._required_inputs is not None:
-            self._required_inputs.append(adsorbate.inp_name)
 
     def remove(self, adsorbate):
         """Remove adsorbate from list."""
         self._adsorbates.remove(adsorbate)
         self._column.remove(adsorbate.row)
-        if self._required_inputs:
-            self._required_inputs.remove(adsorbate.inp_name)
 
     def __iter__(self):
         for elem in self._adsorbates:
