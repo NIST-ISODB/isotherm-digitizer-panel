@@ -12,3 +12,9 @@ pre-commit install
 ```
 panel serve digitizer --dev digitizer/*.py
 ```
+
+## Configuration
+
+Use the following environment variables to configure the digitizer
+
+ * `DIGITIZER_SUBMISSION_FOLDER`: Absolute path to submission folder (defaults to `./submissions`)

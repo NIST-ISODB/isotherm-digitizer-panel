@@ -9,8 +9,6 @@ class Adsorbate():  # pylint: disable=too-few-public-methods
     """Input form for describing adsorbates."""
     def __init__(self):
         """Initialize single adsorbent row.
-
-        :param parent: Adsorbates instance
         """
         self.inp_name = pw.AutocompleteInput(
             name='Adorbate Gas/Fluid',

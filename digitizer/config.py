@@ -2,6 +2,7 @@
 """
 Configuration, including options fetched from ISDB API.
 """
+import os
 import requests
 import requests_cache
 
@@ -64,3 +65,8 @@ MULTI_COMPONENT_EXAMPLE = \
 58.3573,1,0.270268,0.270268
 66.2941,1,0.300474,0.300474
 72.9855,1,0.340276,0.340276"""
+
+THIS_DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
+SUBMISSION_FOLDER = os.getenv(
+    'DIGITIZER_SUBMISSION_FOLDER',
+    os.path.join(THIS_DIR, os.path.pardir, 'submissions'))
