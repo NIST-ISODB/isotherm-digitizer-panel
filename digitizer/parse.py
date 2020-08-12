@@ -20,7 +20,7 @@ def prepare_isotherm_dict(form):
     msg = ''
 
     for inp in form.required_inputs:
-        if not inp.value:
+        if not inp.value or inp.value == 'Select':
             msg += 'Please provide ' + inp.name + '\n'
             valid = False
     if not valid:

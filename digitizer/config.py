@@ -25,8 +25,10 @@ for quantity, url in QUANTITY_API_MAPPING.items():
     json_data = requests.get(BASE_URL + url).json()
     QUANTITIES[quantity] = {
         'json': json_data,
-        'names': ['UNKNOWN'] + [m['name'] for m in json_data],
+        'names': ['Select'] + [m['name'] for m in json_data],
     }
+
+QUANTITIES['isotherm_type']['names'].append('Not specified')
 
 
 def find_by_name(name, json):

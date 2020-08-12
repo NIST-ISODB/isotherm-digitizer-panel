@@ -127,6 +127,9 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
                 # select fields have no placeholder (but are currently pre-filled)
                 pass
 
+        self.inp_pressure_units.value = 'bar'
+        self.inp_composition_type.value = 'Mass Ratio'
+
     def on_click_plot(self, event):  # pylint: disable=unused-argument
         """Plot isotherm."""
         try:
