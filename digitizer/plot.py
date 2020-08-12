@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """Isotherm plotting."""
-from io import StringIO
-import json
 import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
@@ -13,13 +11,13 @@ TOOLS = ['pan', 'wheel_zoom', 'box_zoom', 'reset', 'save']
 class IsothermPlot():
     """Plot of isotherm data for consistency check.
     """
-    def __init__(self, isotherm_dict=None):
+    def __init__(self, isotherm=None):
         """Create plot of isotherm data for consistency check.
 
-        :param isotherm_dict: Dictionary with isotherm data (optional).
+        :param isotherm: Isotherm instance (optional).
         """
         self.figure = figure(tools=TOOLS)
-        self.isotherm_dict = isotherm_dict
+        self.isotherm = isotherm
         self.btn_download = pn.widgets.FileDownload(
             filename='data.json',
             button_type='primary',
@@ -30,9 +28,17 @@ class IsothermPlot():
 
         self.submissions = Submissions()
 
-    def update(self, isotherm_dict):
-        """Update isotherm plot with provided data."""
-        self.isotherm_dict = isotherm_dict
+    def update(self, isotherm_dict, figure_image=None):
+        """Update isotherm plot with provided data.
+
+        :param isotherm_dict: Dictionary with parsed isotherm data.
+        :param figure_image: Byte stream with figure snapshot
+        """
+        display_name = '{} ({})'.format(isotherm_dict['articleSource'],
+                                        isotherm_dict['DOI'])
+        self.isotherm = Isotherm(name=display_name,
+                                 json=isotherm_dict,
+                                 figure_image=figure_image)
         self.figure = self.get_bokeh_plot(isotherm_dict)
 
     def get_bokeh_plot(self, isotherm_dict):
@@ -97,15 +103,11 @@ class IsothermPlot():
 
     def on_click_download(self):
         """Download JSON file."""
-        return StringIO(json.dumps(self.isotherm_dict, indent=4))
+        return self.isotherm.json_str
 
     def on_click_add(self, event):  # pylint: disable=unused-argument
         """Add isotherm to submission."""
-        display_name = '{} ({})'.format(self.isotherm_dict['articleSource'],
-                                        self.isotherm_dict['DOI'])
-        print(display_name)
-        self.submissions.add(
-            Isotherm(name=display_name, json=self.isotherm_dict))
+        self.submissions.add(self.isotherm)
 
     @property
     def layout(self):

@@ -5,6 +5,7 @@ Configuration, including options fetched from ISDB API.
 import os
 import requests
 import requests_cache
+from . import MODULE_DIR
 
 requests_cache.install_cache('matdb_cache')
 
@@ -66,7 +67,11 @@ MULTI_COMPONENT_EXAMPLE = \
 66.2941,1,0.300474,0.300474
 72.9855,1,0.340276,0.340276"""
 
-THIS_DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
+FIGURE_FILENAME_EXAMPLE = 'Figure_S5a.png'
+with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE),
+          'rb') as handle:
+    FIGURE_EXAMPLE = handle.read()
+
 SUBMISSION_FOLDER = os.getenv(
     'DIGITIZER_SUBMISSION_FOLDER',
-    os.path.join(THIS_DIR, os.path.pardir, 'submissions'))
+    os.path.join(MODULE_DIR, os.pardir, 'submissions'))

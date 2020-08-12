@@ -4,10 +4,20 @@ import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
 
-from . import ValidationError
-from .config import QUANTITIES, SINGLE_COMPONENT_EXAMPLE, MULTI_COMPONENT_EXAMPLE, DOIs
+from . import ValidationError, config
+from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
+
+
+class FigureImage():  # pylint: disable=too-few-public-methods
+    """Container for figure image.
+
+    Optionally uploaded together with isotherm.
+    """
+    def __init__(self, data, filename):
+        self.data = data
+        self.filename = filename
 
 
 class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attributes
@@ -41,7 +51,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         self.inp_isotherm_data = pw.TextAreaInput(
             name='Isotherm Data',
             height=200,
-            placeholder=SINGLE_COMPONENT_EXAMPLE)
+            placeholder=config.SINGLE_COMPONENT_EXAMPLE)
+        self.inp_figure_image = pw.FileInput(name='Figure snapshot')
 
         # units metadata
         self.inp_pressure_units = pw.Select(
@@ -77,7 +88,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML("""<h2>Isotherm Metadata</h2>"""),
+            pn.pane.HTML('<h2>Isotherm Metadata</h2>'),
             self.inp_doi,
             self.inp_adsorbent,
             self.inp_temperature,
@@ -85,12 +96,15 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             self.inp_isotherm_type,
             self.inp_measurement_type,
             self.inp_pressure_scale,
+            pn.pane.HTML("""We recommend using the
+                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""
+                         ),
             self.inp_isotherm_data,
-            pn.pane.HTML("""<h2>Units</h2>"""),
-            self.inp_pressure_units,
-            self.inp_saturation_pressure,
+            self.inp_figure_image,
+            pn.pane.HTML('<h2>Units</h2>'),
+            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units,
-            pn.pane.HTML("""<h2>Digitization</h2>"""),
+            pn.pane.HTML('<h2>Digitization</h2>'),
             self.inp_source_type,
             self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill),
@@ -109,7 +123,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
     def on_change_doi(self, event):
         """Warn, if DOI already known."""
         doi = event.new
-        if doi in DOIs:
+        if doi in config.DOIs:
             self.log('DOI {} already present in database.'.format(doi),
                      level='warning')
 
@@ -131,6 +145,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                 pass
 
         self.inp_pressure_units.value = 'bar'
+        self.inp_figure_image.value = config.FIGURE_EXAMPLE
+        self.inp_figure_image.filename = config.FIGURE_FILENAME_EXAMPLE
 
     def on_click_plot(self, event):  # pylint: disable=unused-argument
         """Plot isotherm."""
@@ -140,7 +156,10 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             self.log(str(exc), level='error')
             raise
 
-        self.plot.update(data)
+        figure_image = FigureImage(data=self.inp_figure_image.value,
+                                   filename=self.inp_figure_image.filename
+                                   ) if self.inp_figure_image.value else None
+        self.plot.update(data, figure_image=figure_image)
         self.tabs.active = 2
 
     def log(self, msg, level='info'):
@@ -193,13 +212,13 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
         self.inp_isotherm_data = pw.TextAreaInput(
             name='Isotherm Data',
             height=200,
-            placeholder=MULTI_COMPONENT_EXAMPLE)
+            placeholder=config.MULTI_COMPONENT_EXAMPLE)
 
         # modified prefill function
         self.btn_prefill.on_click(self.on_click_prefill)
 
         self.layout = pn.Column(
-            pn.pane.HTML("""<h2>Isotherm Metadata</h2>"""),
+            pn.pane.HTML('<h2>Isotherm Metadata</h2>'),
             self.inp_doi,
             self.inp_adsorbent,
             self.inp_temperature,
@@ -207,14 +226,16 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             self.inp_isotherm_type,
             self.inp_measurement_type,
             self.inp_pressure_scale,
+            pn.pane.HTML("""We recommend using the
+                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""
+                         ),
             self.inp_isotherm_data,
-            pn.pane.HTML("""<h2>Units</h2>"""),
-            self.inp_pressure_units,
-            self.inp_saturation_pressure,
+            self.inp_figure_image,
+            pn.pane.HTML('<h2>Units</h2>'),
+            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units,
-            self.inp_composition_type,
-            self.inp_concentration_units,
-            pn.pane.HTML("""<h2>Digitization</h2>"""),
+            pn.Row(self.inp_composition_type, self.inp_concentration_units),
+            pn.pane.HTML('<h2>Digitization</h2>'),
             self.inp_source_type,
             self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill),
