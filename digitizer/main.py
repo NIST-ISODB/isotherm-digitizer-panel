@@ -8,7 +8,7 @@ import panel.widgets as pw
 import bokeh.models.widgets as bw
 
 from . import ValidationError
-from .config import QUANTITIES, SINGLE_COMPONENT_EXAMPLE, MULTI_COMPONENT_EXAMPLE
+from .config import QUANTITIES, SINGLE_COMPONENT_EXAMPLE, MULTI_COMPONENT_EXAMPLE, DOIs
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
 from .plot import IsothermPlot
@@ -31,6 +31,7 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         # isotherm metadata
         self.inp_doi = pw.TextInput(name='Article DOI',
                                     placeholder='10.1021/jacs.9b01891')
+        self.inp_doi.param.watch(self.on_change_doi, 'value')
         self.inp_temperature = pw.TextInput(name='Temperature',
                                             placeholder='303')
         self.inp_adsorbent = pw.AutocompleteInput(
@@ -118,6 +119,13 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
             self.out_info,
         )
 
+    def on_change_doi(self, event):
+        """Warn, if DOI already known."""
+        doi = event.new
+        if doi in DOIs:
+            self.log('DOI {} already present in database.'.format(doi),
+                     level='warning')
+
     def on_click_prefill(self, event):  # pylint: disable=unused-argument
         """Prefill form for testing purposes."""
         for inp in self.required_inputs:
@@ -135,14 +143,13 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         try:
             data = prepare_isotherm_dict(self)
         except (ValidationError, ValueError) as exc:
-            self.btn_plot.button_type = 'warning'
-            self.log(str(exc))
+            self.log(str(exc), level='error')
             raise
 
         self.plot.update(data)
         tabs.active = 2
 
-    def log(self, msg):
+    def log(self, msg, level='info'):
         """Print log message.
 
         Note: For some reason, simply updating the .text property of the PreText widget stopped working after moving
@@ -152,6 +159,13 @@ class IsothermSubmissionForm():  # pylint:disable=too-many-instance-attributes
         self.layout.pop(-1)
         self.out_info.text = msg
         self.layout.append(self.out_info)
+
+        if level == 'info':
+            self.btn_plot.button_type = 'primary'
+        elif level == 'warning':
+            self.btn_plot.button_type = 'warning'
+        elif level == 'error':
+            self.btn_plot.button_type = 'danger'
 
 
 plot = IsothermPlot()

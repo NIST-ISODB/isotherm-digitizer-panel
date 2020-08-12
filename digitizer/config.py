@@ -19,7 +19,6 @@ QUANTITY_API_MAPPING = {
     'concentration_units': '/concentration-unit-lookup.json',
     'composition_type': '/composition-type-lookup.json',
 }
-
 QUANTITIES = {}
 for quantity, url in QUANTITY_API_MAPPING.items():
     json_data = requests.get(BASE_URL + url).json()
@@ -29,6 +28,9 @@ for quantity, url in QUANTITY_API_MAPPING.items():
     }
 
 QUANTITIES['isotherm_type']['names'].append('Not specified')
+
+BIBLIOGRAPHY = requests.get(BASE_URL + '/biblios.json').json()
+DOIs = {entry['DOI'] for entry in BIBLIOGRAPHY}
 
 
 def find_by_name(name, json):

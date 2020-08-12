@@ -25,9 +25,6 @@ def prepare_isotherm_dict(form):
             valid = False
     if not valid:
         raise ValidationError(msg)
-
-    # Fill data
-    data['DOI'] = form.inp_doi.value
     data['adsorbent'] = find_by_name(form.inp_adsorbent.value,
                                      QUANTITIES['adsorbents']['json'])
     try:
