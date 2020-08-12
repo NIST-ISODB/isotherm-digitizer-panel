@@ -42,10 +42,11 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             options=QUANTITIES['adsorbents']['names'],
             placeholder='Zeolite 5A')
         self.inp_isotherm_type = pw.Select(
-            name='Isotherm type', options=QUANTITIES['isotherm_type']['names'])
+            name='Isotherm type',
+            options=['Select'] + QUANTITIES['isotherm_type']['names'])
         self.inp_measurement_type = pw.Select(
             name='Measurement type',
-            options=QUANTITIES['measurement_type']['names'])
+            options=['Select'] + QUANTITIES['measurement_type']['names'])
         self.inp_pressure_scale = pw.Checkbox(
             name='Logarithmic pressure scale')
         self.inp_isotherm_data = pw.TextAreaInput(
@@ -57,7 +58,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         # units metadata
         self.inp_pressure_units = pw.Select(
             name='Pressure units',
-            options=QUANTITIES['pressure_units']['names'])
+            options=['Select'] + QUANTITIES['pressure_units']['names'])
         self.inp_pressure_units.param.watch(self.on_change_pressure_units,
                                             'value')
         self.inp_saturation_pressure = pw.TextInput(
@@ -196,7 +197,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         self.inp_composition_type = pw.Select(
             name='Composition type',
-            options=QUANTITIES['composition_type']['names'])
+            options=['Select'] + QUANTITIES['composition_type']['names'])
         self.inp_composition_type.param.watch(self.on_change_composition_type,
                                               'value')
         self.inp_concentration_units = pw.AutocompleteInput(

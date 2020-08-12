@@ -24,9 +24,17 @@ QUANTITY_API_MAPPING = {
 QUANTITIES = {}
 for quantity, url in QUANTITY_API_MAPPING.items():
     json_data = requests.get(BASE_URL + url).json()
+
+    names = []
+    for m in json_data:
+        names.append(m['name'])
+        try:
+            names += m['synonyms']
+        except KeyError:
+            pass
     QUANTITIES[quantity] = {
         'json': json_data,
-        'names': ['Select'] + [m['name'] for m in json_data],
+        'names': names,
     }
 
 QUANTITIES['isotherm_type']['names'].append('Not specified')
