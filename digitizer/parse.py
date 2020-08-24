@@ -100,6 +100,8 @@ def parse_pressure_row(pressure, adsorbates, form):
                 'composition': '',
                 'adsorption': pressure[1],
             }],
+            'total_adsorption':
+            pressure[1]
         }
     else:
         if len(pressure) == n_rows_no_total:
