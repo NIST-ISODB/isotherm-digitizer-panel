@@ -70,7 +70,7 @@ def prepare_isotherm_dict(form):
         data['concentrationUnits'] = form.inp_concentration_units.value
     data['articleSource'] = form.inp_source_type.value
     if 'table' in form.inp_source_type.value.lower():
-        data['tabular'] = True
+        data['tabular_data'] = True
     data['digitizer'] = form.inp_digitizer.value
 
     return data
