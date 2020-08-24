@@ -64,6 +64,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         # digitizer info
         self.inp_source_type = pw.TextInput(name='Source type',
                                             placeholder='Figure 1')
+        self.inp_tabular = pw.Checkbox(name='Tabular Data (i.e., not digitized from a graphical source)')
         self.inp_digitizer = pw.TextInput(name='Digitizer',
                                           placeholder='Your full name')
 
@@ -100,6 +101,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             self.inp_adsorption_units,
             pn.pane.HTML('<h2>Digitization</h2>'),
             self.inp_source_type,
+            self.inp_tabular,
             self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill),
             self.out_info,
