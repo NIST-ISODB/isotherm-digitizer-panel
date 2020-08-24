@@ -103,9 +103,9 @@ def parse_pressure_row(pressure, adsorbates, form):
         }
     else:
         if len(pressure) == n_rows_no_total:
-            has_total_pressure = False
+            has_total_adsorption = False
         elif len(pressure) == n_rows_total:
-            has_total_pressure = True
+            has_total_adsorption = True
         else:
             raise ValidationError('Expected {} or {} columns for pressure point "{}", found {}'. \
                                   format(n_rows_no_total, n_rows_total, str(pressure), len(pressure)), )
@@ -119,8 +119,8 @@ def parse_pressure_row(pressure, adsorbates, form):
                 'adsorption': pressure[2 + 2 * i],
             } for i in range(n_adsorbates)],
         }
-        if has_total_pressure:
-            measurement['total_pressure'] = pressure[-1]
+        if has_total_adsorption:
+            measurement['total_adsorption'] = pressure[-1]
         else:
             pass
             # TODO  # pylint: disable=fixme
