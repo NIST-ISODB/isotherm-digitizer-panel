@@ -3,6 +3,7 @@
 import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
+from io import StringIO
 from .submission import Submissions, Isotherm
 
 TOOLS = ['pan', 'wheel_zoom', 'box_zoom', 'reset', 'save']
@@ -103,7 +104,7 @@ class IsothermPlot():
 
     def on_click_download(self):
         """Download JSON file."""
-        return self.isotherm.json_str
+        return StringIO(self.isotherm.json_str)
 
     def on_click_add(self, event):  # pylint: disable=unused-argument
         """Add isotherm to submission."""
