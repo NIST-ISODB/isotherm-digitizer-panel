@@ -33,7 +33,9 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         self.inp_adsorbent = pw.AutocompleteInput(
             name='Adsorbent Material',
             options=QUANTITIES['adsorbents']['names'],
-            placeholder='Zeolite 5A')
+            placeholder='Zeolite 5A',
+            case_sensitive=False
+        )
         self.inp_isotherm_type = pw.Select(
             name='Isotherm type',
             options=['Select'] + QUANTITIES['isotherm_type']['names'])
@@ -59,7 +61,9 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         self.inp_adsorption_units = pw.AutocompleteInput(
             name='Adsorption Units',
             options=QUANTITIES['adsorption_units']['names'],
-            placeholder='mmol/g')
+            placeholder='mmol/g',
+            case_sensitive=False
+        )
 
         # digitizer info
         self.inp_source_type = pw.TextInput(name='Source type',
@@ -199,6 +203,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             name='Concentration Units',
             options=QUANTITIES['concentration_units']['names'],
             placeholder='mmol/g',
+            case_sensitive=False,
             disabled=True)
 
         super().__init__(plot, tabs)

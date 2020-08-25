@@ -15,6 +15,7 @@ class Adsorbate():  # pylint: disable=too-few-public-methods
             name='Adsorbate Gas/Fluid',
             placeholder='Methane',
             options=QUANTITIES['adsorbates']['names'],
+            case_sensitive=False,
             css_classes=['required'])
         self.row = pn.Row(self.inp_name)
 
