@@ -47,10 +47,10 @@ def find_by_name(name, json):
     """Find JSON corresponding to quantity name."""
     for q_json in json:
         try:
-            names = [ q_json['name'] ] + q_json['synonyms']
+            candidates = [q_json['name']] + q_json['synonyms']
         except AttributeError:
-            names = [ q_json['name'] ]
-        if name in names:
+            candidates = [q_json['name']]
+        if name in candidates:
             return q_json
 
     raise ValueError('JSON for {} not found.'.format(name))

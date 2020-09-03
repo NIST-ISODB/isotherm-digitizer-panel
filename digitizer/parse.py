@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Prepare JSON output."""
 from io import StringIO
+import re
 import numpy as np
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
-import re
+
 
 def prepare_isotherm_dict(form):
     """Validate form contents and prepare JSON.
@@ -52,7 +53,7 @@ def prepare_isotherm_dict(form):
     data['measurement_type'] = form.inp_measurement_type.value
 
     measurements = re.sub(' +', ' ', form.inp_isotherm_data.value)
-    measurements = measurements.replace(" ", ",")
+    measurements = measurements.replace(' ', ',')
     measurements = np.genfromtxt(StringIO(measurements),
                                  delimiter=',',
                                  comments='#')

@@ -34,8 +34,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             name='Adsorbent Material',
             options=QUANTITIES['adsorbents']['names'],
             placeholder='Zeolite 5A',
-            case_sensitive=False
-        )
+            case_sensitive=False)
         self.inp_isotherm_type = pw.Select(
             name='Isotherm type',
             options=['Select'] + QUANTITIES['isotherm_type']['names'])
@@ -62,13 +61,13 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             name='Adsorption Units',
             options=QUANTITIES['adsorption_units']['names'],
             placeholder='mmol/g',
-            case_sensitive=False
-        )
+            case_sensitive=False)
 
         # digitizer info
         self.inp_source_type = pw.TextInput(name='Source type',
                                             placeholder='Figure 1')
-        self.inp_tabular = pw.Checkbox(name='Tabular Data (i.e., not digitized from a graphical source)')
+        self.inp_tabular = pw.Checkbox(
+            name='Tabular Data (i.e., not digitized from a graphical source)')
         self.inp_digitizer = pw.TextInput(name='Digitizer',
                                           placeholder='Your full name')
 
