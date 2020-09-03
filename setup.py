@@ -19,7 +19,7 @@ if __name__ == '__main__':
             'panel~=0.9',
             'requests',
             'requests_cache',
-            #pandas
+            'pandas~=1.0.5',
             #ipython
             #notebook
             #crossrefapi
