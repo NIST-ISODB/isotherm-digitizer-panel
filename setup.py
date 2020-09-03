@@ -32,5 +32,10 @@ if __name__ == '__main__':
                 'pre-commit~=2.2',
                 'pylint~=2.5.0',
             ],
+            'tests': [
+                'pytest~=5.4',
+                'pytest-cov~=2.7',
+                'coverage<5.0',
+            ],
         },
     )

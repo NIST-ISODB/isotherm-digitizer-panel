@@ -1,0 +1,57 @@
+[
+  {
+    "pressure": 0.03362,
+    "species_data": [
+      {
+        "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+        "composition": "1.0",
+        "adsorption": 0.1127
+      }
+    ],
+    "total_adsorption": 0.1127
+  },
+  {
+    "pressure": 0.08609,
+    "species_data": [
+      {
+        "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+        "composition": "1.0",
+        "adsorption": 0.3133
+      }
+    ],
+    "total_adsorption": 0.3133
+  },
+  {
+    "pressure": 0.15333,
+    "species_data": [
+      {
+        "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+        "composition": "1.0",
+        "adsorption": 0.559
+      }
+    ],
+    "total_adsorption": 0.559
+  },
+  {
+    "pressure": 0.4687,
+    "species_data": [
+      {
+        "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+        "composition": "1.0",
+        "adsorption": 1.5469
+      }
+    ],
+    "total_adsorption": 1.5469
+  },
+  {
+    "pressure": 0.72747,
+    "species_data": [
+      {
+        "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+        "composition": "1.0",
+        "adsorption": 2.1537
+      }
+    ],
+    "total_adsorption": 2.1537
+  }
+]
