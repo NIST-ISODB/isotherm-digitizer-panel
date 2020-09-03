@@ -46,9 +46,12 @@ DOIs = {entry['DOI'] for entry in BIBLIOGRAPHY}
 def find_by_name(name, json):
     """Find JSON corresponding to quantity name."""
     for q_json in json:
-        if q_json['name'] == name or name in q_json["synonyms"]:
+        try:
+            names = [ q_json['name'] ] + q_json['synonyms']
+        except AttributeError:
+            names = [ q_json['name'] ]
+        if name in names:
             return q_json
-    # TODO: if find_by_name is used for json structure without "synonyms" attribute, update if/then
 
     raise ValueError('JSON for {} not found.'.format(name))
 
