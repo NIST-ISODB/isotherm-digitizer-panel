@@ -98,7 +98,7 @@ def parse_pressure_row(pressure, adsorbates, form):
             pressure[0],
             'species_data': [{
                 'InChIKey': adsorbates[0]['InChIKey'],
-                'composition': '',
+                'composition': '1.0',
                 'adsorption': pressure[1],
             }],
             'total_adsorption':
