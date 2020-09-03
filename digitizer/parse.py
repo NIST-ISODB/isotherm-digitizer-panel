@@ -2,7 +2,8 @@
 """Prepare JSON output."""
 from io import StringIO
 import re
-import numpy as np
+# import numpy as np
+import pandas as pd
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
 
@@ -52,12 +53,22 @@ def prepare_isotherm_dict(form):
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['measurement_type'] = form.inp_measurement_type.value
 
-    measurements = re.sub(' +', ' ', form.inp_isotherm_data.value)
-    measurements = measurements.replace(' ', ',')
-    measurements = np.genfromtxt(StringIO(measurements),
-                                 delimiter=',',
-                                 comments='#')
-    measurements = np.array(measurements, ndmin=2)  # deal with single data row
+    measurements = form.inp_isotherm_data.value  # get string from input text box
+    for delimiter in ['\t', ';', '|', ',']:
+        measurements = measurements.replace(
+            delimiter, ' ')  # convert all delimiters to spaces
+    measurements = re.sub(' +', ' ', measurements)  # collapse whitespace
+    print(measurements)
+    measurements = pd.read_table(
+        StringIO(measurements),
+        sep=',| ',
+        #sep=' ',
+        # for some reason, leaving only the space delimiter is causing a problem
+        #  when lines have trailing whitespace. Need to check pandas documentation
+        comment='#',
+        header=None,
+        engine='python')
+    measurements = measurements.to_numpy()
     data['isotherm_data'] = [
         parse_pressure_row(pressure, data['adsorbates'], form)
         for pressure in measurements
