@@ -4,7 +4,7 @@ from io import StringIO
 import numpy as np
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
-
+import re
 
 def prepare_isotherm_dict(form):
     """Validate form contents and prepare JSON.
@@ -51,7 +51,9 @@ def prepare_isotherm_dict(form):
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['measurement_type'] = form.inp_measurement_type.value
 
-    measurements = np.genfromtxt(StringIO(form.inp_isotherm_data.value),
+    measurements = re.sub(' +', ' ', form.inp_isotherm_data.value)
+    measurements = measurements.replace(" ", ",")
+    measurements = np.genfromtxt(StringIO(measurements),
                                  delimiter=',',
                                  comments='#')
     measurements = np.array(measurements, ndmin=2)  # deal with single data row
@@ -67,8 +69,8 @@ def prepare_isotherm_dict(form):
         data['compositionType'] = form.inp_composition_type.value
         data['concentrationUnits'] = form.inp_concentration_units.value
     data['articleSource'] = form.inp_source_type.value
-    if 'table' in form.inp_source_type.value.lower():
-        data['tabular'] = True
+    if form.inp_tabular.value:
+        data['tabular_data'] = True
     data['digitizer'] = form.inp_digitizer.value
 
     return data
@@ -98,12 +100,14 @@ def parse_pressure_row(pressure, adsorbates, form):
                 'composition': '',
                 'adsorption': pressure[1],
             }],
+            'total_adsorption':
+            pressure[1]
         }
     else:
         if len(pressure) == n_rows_no_total:
-            has_total_pressure = False
+            has_total_adsorption = False
         elif len(pressure) == n_rows_total:
-            has_total_pressure = True
+            has_total_adsorption = True
         else:
             raise ValidationError('Expected {} or {} columns for pressure point "{}", found {}'. \
                                   format(n_rows_no_total, n_rows_total, str(pressure), len(pressure)), )
@@ -117,8 +121,8 @@ def parse_pressure_row(pressure, adsorbates, form):
                 'adsorption': pressure[2 + 2 * i],
             } for i in range(n_adsorbates)],
         }
-        if has_total_pressure:
-            measurement['total_pressure'] = pressure[-1]
+        if has_total_adsorption:
+            measurement['total_adsorption'] = pressure[-1]
         else:
             pass
             # TODO  # pylint: disable=fixme
