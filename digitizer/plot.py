@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Isotherm plotting."""
+from io import StringIO
 import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
-from io import StringIO
 from .submission import Submissions, Isotherm
 
 TOOLS = ['pan', 'wheel_zoom', 'box_zoom', 'reset', 'save']

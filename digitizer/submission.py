@@ -28,7 +28,10 @@ class Isotherm():
     def json_str(self):
         """Return json bytes string of data."""
         import json  # pylint: disable=import-outside-toplevel
-        return json.dumps(self.json, ensure_ascii=False, sort_keys=True, indent=4)
+        return json.dumps(self.json,
+                          ensure_ascii=False,
+                          sort_keys=True,
+                          indent=4)
 
     @property
     def row(self):
