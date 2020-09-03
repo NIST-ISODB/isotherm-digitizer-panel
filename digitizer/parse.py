@@ -2,7 +2,6 @@
 """Prepare JSON output."""
 from io import StringIO
 import re
-# import numpy as np
 import pandas as pd
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
