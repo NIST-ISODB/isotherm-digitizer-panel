@@ -58,7 +58,6 @@ def prepare_isotherm_dict(form):
         measurements = measurements.replace(
             delimiter, ' ')  # convert all delimiters to spaces
     measurements = re.sub(' +', ' ', measurements)  # collapse whitespace
-    print(measurements)
     measurements = pd.read_table(
         StringIO(measurements),
         sep=',| ',
