@@ -250,7 +250,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
     def on_click_prefill(self, event):  # pylint: disable=unused-argument
         """Prefill form for testing purposes."""
         super().on_click_prefill(event)
-        self.inp_composition_type.value = 'Mass Ratio'
+        self.inp_composition_type.value = 'Mole Fraction'
 
     def on_change_composition_type(self, event):
         """Toggle concentration units input depending on pressure composition type."""
