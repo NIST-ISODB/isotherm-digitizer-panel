@@ -95,14 +95,16 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
                              compression=zipfile.ZIP_DEFLATED) as zhandle:
             for i, isotherm in enumerate(self):
                 directory = isotherm.json['DOI'].replace('/', '')
-                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory,
-                                                             i=i + 1)
-                zhandle.writestr(filename, isotherm.json_str)
 
                 if isotherm.figure_image:
                     filename = '{d}/{d}.Isotherm{i}_{f}'.format(
                         d=directory, i=i + 1, f=isotherm.figure_image.filename)
+                    isotherm.json['associated_content'] = [filename]
                     zhandle.writestr(filename, isotherm.figure_image.data)
+
+                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory,
+                                                             i=i + 1)
+                zhandle.writestr(filename, isotherm.json_str)
 
         memfile.seek(0)
         return memfile
