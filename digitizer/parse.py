@@ -67,8 +67,8 @@ def prepare_isotherm_dict(form):
     if form.inp_tabular.value:
         data['tabular_data'] = True
     data['digitizer'] = form.inp_digitizer.value
-    data['associatedgraphics'] = [form.inp_figure_image.filename]
-    # 'associatedgraphics' is a list in anticipation of multiple file selection
+    data['associated_content'] = [form.inp_figure_image.filename]
+    # 'associated_content' is a list in anticipation of multiple file selection
     # code for getting filenames will change
 
     return data
