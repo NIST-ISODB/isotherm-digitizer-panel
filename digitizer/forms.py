@@ -98,7 +98,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                 <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""
                          ),
             self.inp_isotherm_data,
-            self.inp_figure_image,
+            pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""),
+                   self.inp_figure_image),
             pn.pane.HTML('<h2>Units</h2>'),
             pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units,
@@ -230,7 +231,8 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
                 <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""
                          ),
             self.inp_isotherm_data,
-            self.inp_figure_image,
+            pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""),
+                   self.inp_figure_image),
             pn.pane.HTML('<h2>Units</h2>'),
             pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units,
@@ -250,7 +252,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
     def on_click_prefill(self, event):  # pylint: disable=unused-argument
         """Prefill form for testing purposes."""
         super().on_click_prefill(event)
-        self.inp_composition_type.value = 'Mass Ratio'
+        self.inp_composition_type.value = 'Mole Fraction'
 
     def on_change_composition_type(self, event):
         """Toggle concentration units input depending on pressure composition type."""
