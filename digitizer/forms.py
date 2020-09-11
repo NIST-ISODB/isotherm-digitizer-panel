@@ -202,7 +202,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
         self.inp_concentration_units = pw.AutocompleteInput(
             name='Concentration Units',
             options=QUANTITIES['concentration_units']['names'],
-            placeholder='mmol/g',
+            placeholder='Molarity (mol/l)',
             case_sensitive=False,
             disabled=True)
 
