@@ -2,6 +2,7 @@
 """Prepare JSON output."""
 from io import StringIO
 import re
+import datetime
 import pandas as pd
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
@@ -50,7 +51,7 @@ def prepare_isotherm_dict(form):
         for key in ['name', 'InChIKey']
     } for adsorbate in adsorbates_json]
     data['isotherm_type'] = form.inp_isotherm_type.value
-    data['measurement_type'] = form.inp_measurement_type.value
+    data['category'] = form.inp_measurement_type.value
     form_type = 'single-component' if form.__class__.__name__ == 'IsothermSingleComponentForm' else 'multi-component'
     data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value,
                                                 data['adsorbates'],
@@ -68,6 +69,10 @@ def prepare_isotherm_dict(form):
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
         data['concentrationUnits'] = form.inp_concentration_units.value
+    else:
+        data[
+            'compositionType'] = 'molefraction'  # default for single-component isotherm
+        data['concentrationUnits'] = None
     data['articleSource'] = form.inp_source_type.value
     if form.inp_tabular.value:
         data['tabular_data'] = True
@@ -76,7 +81,38 @@ def prepare_isotherm_dict(form):
     # 'associated_content' is a list in anticipation of multiple file selection
     # code for getting filenames will change
 
+    # Log entry date
+    data['date'] = datetime.date.today().strftime('%Y-%m-%d')
+    # strftime is not strictly necessary but ensures correct YYYY-MM-DD format
+
+    data = correct_json(data)
+
     return data
+
+
+def correct_json(input_dict):
+    """Point corrections to handle specific transforms in output JSON"""
+    # Intention is to eliminate these transforms by improving API cross referencing
+
+    # Collapse and lowercase the composition descriptor
+    input_dict['compositionType'] = ''.join(
+        input_dict['compositionType'].split(' ')).lower()
+
+    # Lowercase the isotherm_type
+    input_dict['isotherm_type'] = input_dict['isotherm_type'].lower()
+
+    # Correct specific fields in output JSON
+    point_corrections = [('RELATIVE (specify units)', 'RELATIVE'),
+                         ('concentration(specifyunits)', 'concentration'),
+                         ('Select', None), ('relativehumidity', 'relhumidity')]
+
+    for key in input_dict:
+        for bad_text, fix_text in point_corrections:
+            if input_dict[key].lower() == bad_text.lower():
+                # match in lowercase for flexibility
+                input_dict[key] = fix_text
+
+    return input_dict
 
 
 def parse_isotherm_data(measurements, adorbates, form_type='single-component'):
