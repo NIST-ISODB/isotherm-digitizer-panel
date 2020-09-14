@@ -58,7 +58,12 @@ def prepare_isotherm_dict(form):
 
     data['pressureUnits'] = form.inp_pressure_units.value
     if form.inp_saturation_pressure.value:
-        data['saturationPressure'] = form.inp_saturation_pressure.value
+        try:
+            data['saturationPressure'] = float(
+                form.inp_saturation_pressure.value)
+        except Exception:
+            raise ValidationError(
+                'Could not convert saturationPressure to float.')
     data['adsorptionUnits'] = form.inp_adsorption_units.value
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
