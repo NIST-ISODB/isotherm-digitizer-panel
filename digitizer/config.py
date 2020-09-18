@@ -55,6 +55,18 @@ def find_by_name(name, json):
 
     raise ValueError('JSON for {} not found.'.format(name))
 
+
+def find_by_key(keyvalue, keytype, json):
+    """Find JSON corresponding to quantity key."""
+    for q_json in json:
+        try:
+            if keyvalue == q_json[keytype]:
+                return q_json
+        except AttributeError:
+            continue
+
+    raise ValueError('JSON for {} not found.'.format(keyvalue))
+
 SINGLE_COMPONENT_EXAMPLE = \
 """#pressure,adsorption
 0.310676,0.019531
