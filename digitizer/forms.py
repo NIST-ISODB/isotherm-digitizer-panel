@@ -73,7 +73,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                                           placeholder='Your full name')
 
         # fill form from JSON upload
-        self.inp_jsondata = pw.FileInput(name='Upload JSON Isotherm')
+        self.inp_json = pw.FileInput(name='Upload JSON Isotherm')
 
         # buttons
         self.btn_prefill = pn.widgets.Button(name='Prefill',
