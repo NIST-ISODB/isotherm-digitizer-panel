@@ -9,7 +9,7 @@ from . import ValidationError, config
 from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
-from .read_isotherm import read_isotherm_json
+from .read_json import read_isotherm_json
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
