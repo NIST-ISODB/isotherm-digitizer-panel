@@ -56,7 +56,7 @@ def find_by_name(name, json):
     raise ValueError('JSON for {} not found.'.format(name))
 
 
-def find_by_key(keyvalue, keytype, json):
+def find_by_key(value, key, json):
     """Find JSON corresponding to quantity key."""
     for q_json in json:
         try:
