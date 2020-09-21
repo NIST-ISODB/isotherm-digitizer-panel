@@ -28,7 +28,6 @@ def lookup_species_name(species, species_type):
 
 
 def load_isotherm_json(form):  # pylint: disable=unused-argument, disable=too-many-branches, disable=too-many-statements
-    # At present, only for single-component isotherms
     """Copy data from JSON isotherm input into form."""
     input_data = json.loads(form.inp_json.value)
     # Pre-process some fields
