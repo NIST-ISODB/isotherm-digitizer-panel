@@ -9,7 +9,7 @@ from . import ValidationError, config
 from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
-from .read_json import read_isotherm_json
+from .read_json import load_isotherm_json
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
@@ -109,7 +109,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             self.inp_tabular, self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill), self.out_info,
             pn.pane.HTML('<h2>Input Data from existing JSON Isotherm</h2>'),
-            pn.Row(self.inp_jsondata, self.btn_xferjson))
+            pn.Row(self.inp_json, self.btn_xferjson))
 
     @property
     def required_inputs(self):
@@ -164,7 +164,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
     def on_click_xferjson(self, event):  # pylint: disable=unused-argument, disable=too-many-branches
         """Call supporting function to import from input JSON"""
-        read_isotherm_json(self)
+        load_isotherm_json(self)
 
     def log(self, msg, level='info'):
         """Print log message.
@@ -239,7 +239,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             self.inp_source_type, self.inp_digitizer,
             pn.Row(self.btn_plot, self.btn_prefill), self.out_info,
             pn.pane.HTML('<h2>Input Data from existing JSON Isotherm</h2>'),
-            pn.Row(self.inp_jsondata, self.btn_xferjson))
+            pn.Row(self.inp_json, self.btn_xferjson))
 
     @property
     def required_inputs(self):
