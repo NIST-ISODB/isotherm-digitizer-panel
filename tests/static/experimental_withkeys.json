@@ -1,0 +1,327 @@
+{
+    "DOI": "10.1007/s10450-020-00253-0",
+    "adsorbates": [
+        {
+            "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+            "name": "Methane"
+        }
+    ],
+    "adsorbent": {
+        "hashkey": "NIST-MATDB-898edd41ca15e03f0e003dd2448f1e5d",
+        "name": "NIST RM-8850"
+    },
+    "adsorptionUnits": "mmol/g",
+    "articleSource": "Figure S6",
+    "associated_content": [
+        null
+    ],
+    "category": "exp",
+    "compositionType": "molefraction",
+    "concentrationUnits": "",
+    "date": "2020-09-09",
+    "digitizer": "NIST FACT Lab",
+    "filename": "10.1007s10450-020-00253-0.DS01.Aliquot1.Isotherm1",
+    "isotherm_data": [
+        {
+            "pressure": 0.03362024,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 0.11270688,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 0.11270688
+        },
+        {
+            "pressure": 0.08608975,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 0.31327451,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 0.31327451
+        },
+        {
+            "pressure": 0.15332591,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 0.55895366,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 0.55895366
+        },
+        {
+            "pressure": 0.46870088,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 1.54686033,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 1.54686033
+        },
+        {
+            "pressure": 0.72746779,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 2.15368729,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 2.15368729
+        },
+        {
+            "pressure": 0.92712632,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 2.5157927,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 2.5157927
+        },
+        {
+            "pressure": 1.07506431,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 2.73934038,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 2.73934038
+        },
+        {
+            "pressure": 1.21080763,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 2.9156223,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 2.9156223
+        },
+        {
+            "pressure": 1.40978577,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.1327809,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.1327809
+        },
+        {
+            "pressure": 1.61057213,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.31352207,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.31352207
+        },
+        {
+            "pressure": 1.80789726,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.46258196,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.46258196
+        },
+        {
+            "pressure": 2.00828373,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.59151034,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.59151034
+        },
+        {
+            "pressure": 2.20699332,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.69978953,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.69978953
+        },
+        {
+            "pressure": 2.40949524,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.79539594,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.79539594
+        },
+        {
+            "pressure": 2.60590135,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.87534175,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.87534175
+        },
+        {
+            "pressure": 2.80855855,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 3.94688405,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 3.94688405
+        },
+        {
+            "pressure": 3.00958351,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.00769019,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.00769019
+        },
+        {
+            "pressure": 3.45024921,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.11443628,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.11443628
+        },
+        {
+            "pressure": 3.9048642,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.19419317,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.19419317
+        },
+        {
+            "pressure": 4.35044134,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.25234213,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.25234213
+        },
+        {
+            "pressure": 4.79847717,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.29152116,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.29152116
+        },
+        {
+            "pressure": 5.24724124,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.31773156,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.31773156
+        },
+        {
+            "pressure": 5.70059431,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.33362415,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.33362415
+        },
+        {
+            "pressure": 6.14138905,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.33511572,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.33511572
+        },
+        {
+            "pressure": 6.5871968,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.32510135,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.32510135
+        },
+        {
+            "pressure": 7.04147556,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.30801953,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.30801953
+        },
+        {
+            "pressure": 7.49369286,
+            "species_data": [
+                {
+                    "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
+                    "adsorption": 4.27961068,
+                    "composition": "1.0"
+                }
+            ],
+            "total_adsorption": 4.27961068
+        }
+    ],
+    "isotherm_type": "excess",
+    "pressureUnits": "MPa",
+    "tabular_data": true,
+    "temperature": 298
+}
