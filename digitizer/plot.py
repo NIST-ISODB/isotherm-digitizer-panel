@@ -48,22 +48,8 @@ class IsothermPlot():
 
         :returns: bokeh Figure instance
         """
-
         p = self.figure  # pylint: disable=invalid-name
-        #p = figure(tools=TOOLS, height=350, width=550)
-        # p.xgrid.grid_line_color = None
-
-        # # Colored background
-        # colors = ['red', 'orange', 'green', 'yellow', 'cyan', 'pink', 'palegreen']
-        # start = 0
-        # for i, steps in enumerate(out_dict['stage_info']['nsteps']):
-        #     end = start + steps
-        #     p.add_layout(bmd.BoxAnnotation(left=start, right=end, fill_alpha=0.2, fill_color=colors[i]))
-        #     start = end
-        #
-        # # Trace line and markers
-        # p.line('index', 'energy', source=data, line_color='blue')
-        # p.circle('index', 'energy', source=data, line_color='blue', size=3)
+        p.renderers = []  # reset plot
 
         pressures = [
             point['pressure'] for point in isotherm_dict['isotherm_data']
