@@ -59,6 +59,7 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
             filename='submission.zip',
             button_type='primary',
             callback=self.on_click_download)
+        self.btn_download.data = "" # bug in panel
         self._submit_btns = pn.Row(self.btn_download, self.btn_submit)
 
         self._column = pn.Column(objects=[a.row for a in self])

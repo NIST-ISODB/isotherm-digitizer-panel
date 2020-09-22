@@ -23,6 +23,7 @@ class IsothermPlot():
             filename='data.json',
             button_type='primary',
             callback=self.on_click_download)
+        self.btn_download.data = "" # bug in panel
         self.btn_add = pn.widgets.Button(name='Add to submission',
                                          button_type='primary')
         self.btn_add.on_click(self.on_click_add)

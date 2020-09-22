@@ -30,8 +30,12 @@ def prepare_isotherm_dict(form):
     # fill data
     data['DOI'] = form.inp_doi.value
 
-    adsorbent_json = find_by_name(form.inp_adsorbent.value,
-                                  QUANTITIES['adsorbents']['json'])
+    try:
+        adsorbent_json = find_by_name(form.inp_adsorbent.value,
+                                      QUANTITIES['adsorbents']['json'])
+    except ValueError:
+        adsorbent_json = dict(name=form.inp_adsorbent.value, hashkey=None)
+
     data['adsorbent'] = {
         key: adsorbent_json[key]
         for key in ['name', 'hashkey']
