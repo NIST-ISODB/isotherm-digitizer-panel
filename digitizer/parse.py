@@ -39,8 +39,9 @@ def prepare_isotherm_dict(form):
     }
     try:
         data['temperature'] = int(form.inp_temperature.value)
-    except Exception:
-        raise ValidationError('Could not convert temperature to int.')
+    except ValueError as error_handler:
+        raise ValidationError(
+            'Could not convert temperature to int.') from error_handler
 
     adsorbates_json = [
         find_by_name(a.inp_name.value, QUANTITIES['adsorbates']['json'])
@@ -62,9 +63,10 @@ def prepare_isotherm_dict(form):
         try:
             data['saturationPressure'] = float(
                 form.inp_saturation_pressure.value)
-        except Exception:
+        except ValueError as error_handler:
             raise ValidationError(
-                'Could not convert saturationPressure to float.')
+                'Could not convert saturationPressure to float.'
+            ) from error_handler
     data['adsorptionUnits'] = form.inp_adsorption_units.value
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
@@ -85,34 +87,12 @@ def prepare_isotherm_dict(form):
     data['date'] = datetime.date.today().strftime('%Y-%m-%d')
     # strftime is not strictly necessary but ensures correct YYYY-MM-DD format
 
-    data = correct_json(data)
+    # Sanitize keys from optional menus
+    for key in data:
+        if data[key] == 'Select':
+            data[key] = None
 
     return data
-
-
-def correct_json(input_dict):
-    """Point corrections to handle specific transforms in output JSON"""
-    # Intention is to eliminate these transforms by improving API cross referencing
-
-    # Collapse and lowercase the composition descriptor
-    input_dict['compositionType'] = ''.join(
-        input_dict['compositionType'].split(' ')).lower()
-
-    # Lowercase the isotherm_type
-    input_dict['isotherm_type'] = input_dict['isotherm_type'].lower()
-
-    # Correct specific fields in output JSON
-    point_corrections = [('RELATIVE (specify units)', 'RELATIVE'),
-                         ('concentration(specifyunits)', 'concentration'),
-                         ('Select', None), ('relativehumidity', 'relhumidity')]
-
-    for key in input_dict:
-        for bad_text, fix_text in point_corrections:
-            if input_dict[key].lower() == bad_text.lower():
-                # match in lowercase for flexibility
-                input_dict[key] = fix_text
-
-    return input_dict
 
 
 def parse_isotherm_data(measurements, adorbates, form_type='single-component'):
