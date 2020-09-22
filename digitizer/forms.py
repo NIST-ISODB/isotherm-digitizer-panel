@@ -4,6 +4,7 @@ import collections
 import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
+from bokeh import __version__ as bk_ver
 
 from . import ValidationError, config
 from .config import QUANTITIES
@@ -11,6 +12,12 @@ from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
+
+# TODO: Remove after official bokeh/panel release  # pylint: disable=fixme
+if bk_ver.startswith('2.3'):
+    restrict_kwargs = {'restrict': False}
+else:
+    restrict_kwargs = {}
 
 
 class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attributes
@@ -34,7 +41,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             name='Adsorbent Material',
             options=QUANTITIES['adsorbents']['names'],
             placeholder='Zeolite 5A',
-            case_sensitive=False)
+            case_sensitive=False,
+            **restrict_kwargs)
         self.inp_isotherm_type = pw.Select(
             name='Isotherm type',
             options=['Select'] + QUANTITIES['isotherm_type']['names'])
@@ -61,7 +69,8 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             name='Adsorption Units',
             options=QUANTITIES['adsorption_units']['names'],
             placeholder='mmol/g',
-            case_sensitive=False)
+            case_sensitive=False,
+            **restrict_kwargs)
 
         # digitizer info
         self.inp_source_type = pw.TextInput(name='Source type',
@@ -204,7 +213,8 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             options=QUANTITIES['concentration_units']['names'],
             placeholder='mmol/g',
             case_sensitive=False,
-            disabled=True)
+            disabled=True,
+            **restrict_kwargs)
 
         super().__init__(plot, tabs)
 

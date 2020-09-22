@@ -15,8 +15,9 @@ if __name__ == '__main__':
         author_email='leopold.talirz@gmail.com',
         #url='to/be/decided',
         install_requires=[
-            'bokeh~=2.1',
-            'panel~=0.9',
+            'panel @ https://github.com/ltalirz/panel/archive/for-digitizer.zip',
+            #'bokeh~=2.1',
+            #'panel~=0.9',
             'requests',
             'requests_cache',
             'pandas~=1.0.5',
