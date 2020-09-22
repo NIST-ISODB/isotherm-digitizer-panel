@@ -11,12 +11,11 @@ class Adsorbate():  # pylint: disable=too-few-public-methods
     def __init__(self):
         """Initialize single adsorbent row.
         """
-        self.inp_name = pw.AutocompleteInput(
-            name='Adsorbate Gas/Fluid',
-            placeholder='Methane',
-            options=QUANTITIES['adsorbates']['names'],
-            case_sensitive=False,
-            css_classes=['required'])
+        self.inp_name = pw.AutocompleteInput(name='Adsorbate Gas/Fluid',
+                                             placeholder='Methane',
+                                             options=QUANTITIES['adsorbates']['names'],
+                                             case_sensitive=False,
+                                             css_classes=['required'])
         self.row = pn.Row(self.inp_name)
 
     @property

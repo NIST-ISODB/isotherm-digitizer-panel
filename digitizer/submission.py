@@ -28,10 +28,7 @@ class Isotherm():
     def json_str(self):
         """Return json bytes string of data."""
         import json  # pylint: disable=import-outside-toplevel
-        return json.dumps(self.json,
-                          ensure_ascii=False,
-                          sort_keys=True,
-                          indent=4)
+        return json.dumps(self.json, ensure_ascii=False, sort_keys=True, indent=4)
 
     @property
     def row(self):
@@ -55,10 +52,9 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
         self.btn_submit = pw.Button(name='Submit', button_type='primary')
         self.btn_submit.on_click(self.on_click_submit)
 
-        self.btn_download = pn.widgets.FileDownload(
-            filename='submission.zip',
-            button_type='primary',
-            callback=self.on_click_download)
+        self.btn_download = pn.widgets.FileDownload(filename='submission.zip',
+                                                    button_type='primary',
+                                                    callback=self.on_click_download)
         self.btn_download.data = ''  # bug in panel https://github.com/holoviz/panel/issues/1598
         self._submit_btns = pn.Row(self.btn_download, self.btn_submit)
 
@@ -91,20 +87,16 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
     def get_zip_file(self):
         """Create zip file for download."""
         memfile = BytesIO()
-        with zipfile.ZipFile(memfile,
-                             mode='w',
-                             compression=zipfile.ZIP_DEFLATED) as zhandle:
+        with zipfile.ZipFile(memfile, mode='w', compression=zipfile.ZIP_DEFLATED) as zhandle:
             for i, isotherm in enumerate(self):
                 directory = isotherm.json['DOI'].replace('/', '')
 
                 if isotherm.figure_image:
-                    filename = '{d}/{d}.Isotherm{i}_{f}'.format(
-                        d=directory, i=i + 1, f=isotherm.figure_image.filename)
+                    filename = '{d}/{d}.Isotherm{i}_{f}'.format(d=directory, i=i + 1, f=isotherm.figure_image.filename)
                     isotherm.json['associated_content'] = [filename]
                     zhandle.writestr(filename, isotherm.figure_image.data)
 
-                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory,
-                                                             i=i + 1)
+                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory, i=i + 1)
                 zhandle.writestr(filename, isotherm.json_str)
 
         memfile.seek(0)

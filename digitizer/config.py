@@ -55,6 +55,18 @@ def find_by_name(name, json):
 
     raise ValueError('JSON for {} not found.'.format(name))
 
+
+def find_by_key(value, key, json):
+    """Find JSON corresponding to quantity key."""
+    for q_json in json:
+        try:
+            if value == q_json[key]:
+                return q_json
+        except AttributeError:
+            continue
+
+    raise ValueError('JSON for {} not found.'.format(value))
+
 SINGLE_COMPONENT_EXAMPLE = \
 """#pressure,adsorption
 0.310676,0.019531
@@ -80,10 +92,7 @@ MULTI_COMPONENT_EXAMPLE = \
 72.9855,1,0.340276,0.340276"""
 
 FIGURE_FILENAME_EXAMPLE = 'Figure_S5a.png'
-with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE),
-          'rb') as handle:
+with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE), 'rb') as handle:
     FIGURE_EXAMPLE = handle.read()
 
-SUBMISSION_FOLDER = os.getenv(
-    'DIGITIZER_SUBMISSION_FOLDER',
-    os.path.join(MODULE_DIR, os.pardir, 'submissions'))
+SUBMISSION_FOLDER = os.getenv('DIGITIZER_SUBMISSION_FOLDER', os.path.join(MODULE_DIR, os.pardir, 'submissions'))
