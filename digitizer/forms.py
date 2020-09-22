@@ -71,31 +71,40 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         self.inp_json = pw.FileInput(name='Upload JSON Isotherm')
 
         # buttons
-        self.btn_prefill = pn.widgets.Button(name='Prefill', button_type='primary')
+        self.btn_prefill = pn.widgets.Button(name='Prefill (default or from JSON)', button_type='primary')
         self.btn_prefill.on_click(self.on_click_prefill)
         self.out_info = bw.PreText(text='Press "Plot" in order to download json.')
         self.inp_adsorbates = Adsorbates(show_controls=False, )
         self.btn_plot = pn.widgets.Button(name='Plot', button_type='primary')
         self.btn_plot.on_click(self.on_click_plot)
 
-        self.btn_xferjson = pn.widgets.Button(name='Transfer data from JSON', button_type='primary')
-        self.btn_xferjson.on_click(self.on_click_xferjson)
-
         for inp in self.required_inputs:
             inp.css_classes = ['required']
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Metadata</h2>'), self.inp_doi, self.inp_adsorbent, self.inp_temperature,
-            self.inp_adsorbates.column, self.inp_isotherm_type, self.inp_measurement_type, self.inp_pressure_scale,
+            pn.pane.HTML('<h2>Isotherm Metadata</h2>'),
+            self.inp_doi,
+            self.inp_adsorbent,
+            self.inp_temperature,
+            self.inp_adsorbates.column,
+            self.inp_isotherm_type,
+            self.inp_measurement_type,
+            self.inp_pressure_scale,
             pn.pane.HTML("""We recommend using the
                 <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""),
-            self.inp_isotherm_data, pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""), self.inp_figure_image),
-            pn.pane.HTML('<h2>Units</h2>'), pn.Row(self.inp_pressure_units,
-                                                   self.inp_saturation_pressure), self.inp_adsorption_units,
-            pn.pane.HTML('<h2>Digitization</h2>'), self.inp_source_type, self.inp_tabular, self.inp_digitizer,
-            pn.Row(self.btn_plot, self.btn_prefill), self.out_info,
-            pn.pane.HTML('<h2>Input Data from existing JSON Isotherm</h2>'), pn.Row(self.inp_json, self.btn_xferjson))
+            self.inp_isotherm_data,
+            pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""), self.inp_figure_image),
+            pn.pane.HTML('<h2>Units</h2>'),
+            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
+            self.inp_adsorption_units,
+            pn.pane.HTML('<h2>Digitization</h2>'),
+            self.inp_source_type,
+            self.inp_tabular,
+            self.inp_digitizer,
+            pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
+            self.out_info,
+        )
 
     @property
     def required_inputs(self):
@@ -121,6 +130,11 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
     def on_click_prefill(self, event):  # pylint: disable=unused-argument
         """Prefill form for testing purposes."""
+        if self.inp_json.value:
+            load_isotherm_json(form=self, json_string=self.inp_json.value)
+            return
+
+        # Todo: Replace this by loading of a sample isotherm JSON
         for inp in self.required_inputs:
             try:
                 inp.value = inp.placeholder
@@ -144,10 +158,6 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                                    filename=self.inp_figure_image.filename) if self.inp_figure_image.value else None
         self.plot.update(data, figure_image=figure_image)
         self.tabs.active = 2
-
-    def on_click_xferjson(self, event):  # pylint: disable=unused-argument, disable=too-many-branches
-        """Call supporting function to import from input JSON"""
-        load_isotherm_json(form=self, json_string=self.inp_json.value)
 
     def log(self, msg, level='info'):
         """Print log message.
@@ -211,8 +221,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             pn.pane.HTML('<h2>Units</h2>'), pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
             self.inp_adsorption_units, pn.Row(self.inp_composition_type, self.inp_concentration_units),
             pn.pane.HTML('<h2>Digitization</h2>'), self.inp_source_type, self.inp_digitizer,
-            pn.Row(self.btn_plot, self.btn_prefill), self.out_info,
-            pn.pane.HTML('<h2>Input Data from existing JSON Isotherm</h2>'), pn.Row(self.inp_json, self.btn_xferjson))
+            pn.Row(self.btn_plot, self.btn_prefill, self.inp_json), self.out_info)
 
     @property
     def required_inputs(self):
