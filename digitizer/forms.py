@@ -63,7 +63,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                                                          **restrict_kwargs)
 
         # digitizer info
-        self.inp_source_type = pw.TextInput(name='Source description', placeholder='Figure 1')
+        self.inp_source_type = pw.TextInput(name='Source description', placeholder='Figure 1a')
         self.inp_tabular = pw.Checkbox(name='Tabular Data (i.e., not digitized from a graphical source)')
         self.inp_digitizer = pw.TextInput(name='Digitized by', placeholder='Your full name')
 
