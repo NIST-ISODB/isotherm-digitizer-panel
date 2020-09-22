@@ -13,9 +13,9 @@ from .parse import prepare_isotherm_dict
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
-# TODO: Remove after official bokeh/panel release
-if bk_ver.startswith("2.3"):
-    restrict_kwargs = { 'restrict': False }
+# TODO: Remove after official bokeh/panel release  # pylint: disable=fixme
+if bk_ver.startswith('2.3'):
+    restrict_kwargs = {'restrict': False}
 else:
     restrict_kwargs = {}
 
@@ -70,7 +70,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             options=QUANTITIES['adsorption_units']['names'],
             placeholder='mmol/g',
             case_sensitive=False,
-           **restrict_kwargs)
+            **restrict_kwargs)
 
         # digitizer info
         self.inp_source_type = pw.TextInput(name='Source type',
