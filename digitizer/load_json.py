@@ -5,6 +5,10 @@ import json
 from .config import QUANTITIES, find_by_key
 from .adsorbates import AdsorbateWithControls
 
+CATEGORY_CONV = [('exp', 'Experiment'), ('sim', 'Simulation'),
+                 ('mod', 'Modeling'), ('ils', 'Interlaboratory Study'),
+                 ('qua', 'Quantum/AB Initio/DFT')]
+
 
 def lookup_species_name(species, species_type):
     """Look up adsorbent or adsorbate species from a hash or name"""
@@ -27,18 +31,20 @@ def lookup_species_name(species, species_type):
     return output['name']
 
 
-def load_isotherm_json(form):  # pylint: disable=unused-argument, disable=too-many-branches, disable=too-many-statements
-    """Copy data from JSON isotherm input into form."""
-    input_data = json.loads(form.inp_json.value)
+def load_isotherm_json(form, json_string):  # pylint: disable=too-many-branches,too-many-statements
+    """Populate form with data from JSON.
+
+    :param json_string: JSON string
+    :param form: IsothermForm instance to fill
+    """
+    input_data = json.loads(json_string)
     # Pre-process some fields
     try:
         input_data['isotherm_type'] = input_data['isotherm_type'].capitalize()
     except KeyError:
         pass
-    category_conv = [('exp', 'Experiment'), ('sim', 'Simulation'),
-                     ('mod', 'Modeling'), ('ils', 'Interlaboratory Study'),
-                     ('qua', 'Quantum/AB Initio/DFT')]
-    for short, full in category_conv:
+
+    for short, full in CATEGORY_CONV:
         try:
             if input_data['category'] == short:
                 input_data['category'] = full
@@ -85,7 +91,7 @@ def load_isotherm_json(form):  # pylint: disable=unused-argument, disable=too-ma
         except KeyError:
             pass
 
-    # Look up adsorbentfrom input JSON
+    # Look up adsorbent from input JSON
     form.inp_adsorbent.value = lookup_species_name(input_data['adsorbent'],
                                                    'adsorbents')
 

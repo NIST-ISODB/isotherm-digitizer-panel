@@ -10,7 +10,7 @@ from . import ValidationError, config
 from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
-from .read_json import load_isotherm_json
+from .load_json import load_isotherm_json
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
@@ -173,7 +173,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
     def on_click_xferjson(self, event):  # pylint: disable=unused-argument, disable=too-many-branches
         """Call supporting function to import from input JSON"""
-        load_isotherm_json(self)
+        load_isotherm_json(form=self, json_string=self.inp_json.value)
 
     def log(self, msg, level='info'):
         """Print log message.
