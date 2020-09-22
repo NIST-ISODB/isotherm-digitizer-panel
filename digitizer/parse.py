@@ -31,43 +31,29 @@ def prepare_isotherm_dict(form):
     data['DOI'] = form.inp_doi.value
 
     try:
-        adsorbent_json = find_by_name(form.inp_adsorbent.value,
-                                      QUANTITIES['adsorbents']['json'])
+        adsorbent_json = find_by_name(form.inp_adsorbent.value, QUANTITIES['adsorbents']['json'])
     except ValueError:
         adsorbent_json = dict(name=form.inp_adsorbent.value, hashkey=None)
 
-    data['adsorbent'] = {
-        key: adsorbent_json[key]
-        for key in ['name', 'hashkey']
-    }
+    data['adsorbent'] = {key: adsorbent_json[key] for key in ['name', 'hashkey']}
     try:
         data['temperature'] = int(form.inp_temperature.value)
     except Exception:
         raise ValidationError('Could not convert temperature to int.')
 
-    adsorbates_json = [
-        find_by_name(a.inp_name.value, QUANTITIES['adsorbates']['json'])
-        for a in form.inp_adsorbates
-    ]
-    data['adsorbates'] = [{
-        key: adsorbate[key]
-        for key in ['name', 'InChIKey']
-    } for adsorbate in adsorbates_json]
+    adsorbates_json = [find_by_name(a.inp_name.value, QUANTITIES['adsorbates']['json']) for a in form.inp_adsorbates]
+    data['adsorbates'] = [{key: adsorbate[key] for key in ['name', 'InChIKey']} for adsorbate in adsorbates_json]
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['measurement_type'] = form.inp_measurement_type.value
     form_type = 'single-component' if form.__class__.__name__ == 'IsothermSingleComponentForm' else 'multi-component'
-    data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value,
-                                                data['adsorbates'],
-                                                form_type=form_type)
+    data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value, data['adsorbates'], form_type=form_type)
 
     data['pressureUnits'] = form.inp_pressure_units.value
     if form.inp_saturation_pressure.value:
         try:
-            data['saturationPressure'] = float(
-                form.inp_saturation_pressure.value)
+            data['saturationPressure'] = float(form.inp_saturation_pressure.value)
         except Exception:
-            raise ValidationError(
-                'Could not convert saturationPressure to float.')
+            raise ValidationError('Could not convert saturationPressure to float.')
     data['adsorptionUnits'] = form.inp_adsorption_units.value
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
@@ -93,8 +79,7 @@ def parse_isotherm_data(measurements, adorbates, form_type='single-component'):
 
     """
     for delimiter in ['\t', ';', '|', ',']:
-        measurements = measurements.replace(
-            delimiter, ' ')  # convert all delimiters to spaces
+        measurements = measurements.replace(delimiter, ' ')  # convert all delimiters to spaces
     measurements = re.sub(' +', ' ', measurements)  # collapse whitespace
     measurements = pd.read_table(
         StringIO(measurements),
@@ -106,10 +91,7 @@ def parse_isotherm_data(measurements, adorbates, form_type='single-component'):
         header=None,
         engine='python')
     measurements = measurements.to_numpy()
-    return [
-        parse_pressure_row(pressure, adorbates, form_type)
-        for pressure in measurements
-    ]
+    return [parse_pressure_row(pressure, adorbates, form_type) for pressure in measurements]
 
 
 def parse_pressure_row(pressure, adsorbates, form_type):
@@ -129,15 +111,13 @@ def parse_pressure_row(pressure, adsorbates, form_type):
             raise ValidationError('Expected 2 columns for pressure point "{}", found {}'. \
                                   format(str(pressure), len(pressure)), )
         measurement = {
-            'pressure':
-            pressure[0],
+            'pressure': pressure[0],
             'species_data': [{
                 'InChIKey': adsorbates[0]['InChIKey'],
                 'composition': '1.0',
                 'adsorption': pressure[1],
             }],
-            'total_adsorption':
-            pressure[1]
+            'total_adsorption': pressure[1]
         }
     else:
         if len(pressure) == n_rows_no_total:

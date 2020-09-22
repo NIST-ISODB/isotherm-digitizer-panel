@@ -34,4 +34,11 @@ jobs:
       run: |
         pip install -e .[tests]
     - name: Run tests
-      run: pytest
+      run: pytest --cov-report xml
+    - name: Upload coverage report
+      if: github.repository == 'ltalirz/isotherm-digitizer-panel'
+      uses: codecov/codecov-action@v1
+      with:
+        name: ubuntu-apt
+        file: ./coverage.xml
+        fail_ci_if_error: true

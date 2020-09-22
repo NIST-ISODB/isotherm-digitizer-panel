@@ -10,10 +10,7 @@ pn.extension()
 plot = IsothermPlot()
 
 tabs = pn.Tabs()
-tabs.extend([('Single-component',
-              IsothermSingleComponentForm(plot=plot, tabs=tabs).layout),
-             ('Multi-component',
-              IsothermMultiComponentForm(plot=plot, tabs=tabs).layout),
-             ('Plot', plot.layout)])
+tabs.extend([('Single-component', IsothermSingleComponentForm(plot=plot, tabs=tabs).layout),
+             ('Multi-component', IsothermMultiComponentForm(plot=plot, tabs=tabs).layout), ('Plot', plot.layout)])
 
 tabs.servable()

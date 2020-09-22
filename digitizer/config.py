@@ -92,10 +92,7 @@ MULTI_COMPONENT_EXAMPLE = \
 72.9855,1,0.340276,0.340276"""
 
 FIGURE_FILENAME_EXAMPLE = 'Figure_S5a.png'
-with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE),
-          'rb') as handle:
+with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE), 'rb') as handle:
     FIGURE_EXAMPLE = handle.read()
 
-SUBMISSION_FOLDER = os.getenv(
-    'DIGITIZER_SUBMISSION_FOLDER',
-    os.path.join(MODULE_DIR, os.pardir, 'submissions'))
+SUBMISSION_FOLDER = os.getenv('DIGITIZER_SUBMISSION_FOLDER', os.path.join(MODULE_DIR, os.pardir, 'submissions'))

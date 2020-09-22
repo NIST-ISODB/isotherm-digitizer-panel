@@ -19,13 +19,11 @@ class IsothermPlot():
         """
         self.figure = figure(tools=TOOLS)
         self.isotherm = isotherm
-        self.btn_download = pn.widgets.FileDownload(
-            filename='data.json',
-            button_type='primary',
-            callback=self.on_click_download)
+        self.btn_download = pn.widgets.FileDownload(filename='data.json',
+                                                    button_type='primary',
+                                                    callback=self.on_click_download)
         self.btn_download.data = ''  # bug in panel https://github.com/holoviz/panel/issues/1598
-        self.btn_add = pn.widgets.Button(name='Add to submission',
-                                         button_type='primary')
+        self.btn_add = pn.widgets.Button(name='Add to submission', button_type='primary')
         self.btn_add.on_click(self.on_click_add)
 
         self.submissions = Submissions()
@@ -36,11 +34,8 @@ class IsothermPlot():
         :param isotherm_dict: Dictionary with parsed isotherm data.
         :param figure_image: Byte stream with figure snapshot
         """
-        display_name = '{} ({})'.format(isotherm_dict['articleSource'],
-                                        isotherm_dict['DOI'])
-        self.isotherm = Isotherm(name=display_name,
-                                 json=isotherm_dict,
-                                 figure_image=figure_image)
+        display_name = '{} ({})'.format(isotherm_dict['articleSource'], isotherm_dict['DOI'])
+        self.isotherm = Isotherm(name=display_name, json=isotherm_dict, figure_image=figure_image)
         self.figure = self.get_bokeh_plot(isotherm_dict)
 
     def get_bokeh_plot(self, isotherm_dict):
@@ -51,38 +46,23 @@ class IsothermPlot():
         p = self.figure  # pylint: disable=invalid-name
         p.renderers = []  # reset plot
 
-        pressures = [
-            point['pressure'] for point in isotherm_dict['isotherm_data']
-        ]
+        pressures = [point['pressure'] for point in isotherm_dict['isotherm_data']]
 
         for i in range(len(isotherm_dict['adsorbates'])):
             adsorbate = isotherm_dict['adsorbates'][i]
-            adsorption = [
-                point['species_data'][i]['adsorption']
-                for point in isotherm_dict['isotherm_data']
-            ]
+            adsorption = [point['species_data'][i]['adsorption'] for point in isotherm_dict['isotherm_data']]
 
-            data = bmd.ColumnDataSource(data=dict(index=range(len(pressures)),
-                                                  pressure=pressures,
-                                                  adsorption=adsorption))
+            data = bmd.ColumnDataSource(
+                data=dict(index=range(len(pressures)), pressure=pressures, adsorption=adsorption))
 
-            p.line('pressure',
-                   'adsorption',
-                   source=data,
-                   legend_label=adsorbate['name'])
-            p.circle('pressure',
-                     'adsorption',
-                     source=data,
-                     legend_label=adsorbate['name'])
+            p.line('pressure', 'adsorption', source=data, legend_label=adsorbate['name'])
+            p.circle('pressure', 'adsorption', source=data, legend_label=adsorbate['name'])
 
         # update labels
-        p.xaxis.axis_label = 'Pressure [{}]'.format(
-            isotherm_dict['pressureUnits'])
-        p.yaxis.axis_label = 'Adsorption [{}]'.format(
-            isotherm_dict['adsorptionUnits'])
+        p.xaxis.axis_label = 'Pressure [{}]'.format(isotherm_dict['pressureUnits'])
+        p.yaxis.axis_label = 'Adsorption [{}]'.format(isotherm_dict['adsorptionUnits'])
 
-        tooltips = [(p.xaxis.axis_label, '@pressure'),
-                    (p.yaxis.axis_label, '@adsorption')]
+        tooltips = [(p.xaxis.axis_label, '@pressure'), (p.yaxis.axis_label, '@adsorption')]
         hover = bmd.HoverTool(tooltips=tooltips)
         p.tools.pop()
         p.tools.append(hover)
