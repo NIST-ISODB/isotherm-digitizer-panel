@@ -63,9 +63,9 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
                                                          **restrict_kwargs)
 
         # digitizer info
-        self.inp_source_type = pw.TextInput(name='Source type', placeholder='Figure 1')
+        self.inp_source_type = pw.TextInput(name='Source description', placeholder='Figure 1')
         self.inp_tabular = pw.Checkbox(name='Tabular Data (i.e., not digitized from a graphical source)')
-        self.inp_digitizer = pw.TextInput(name='Digitizer', placeholder='Your full name')
+        self.inp_digitizer = pw.TextInput(name='Digitized by', placeholder='Your full name')
 
         # fill form from JSON upload
         self.inp_json = pw.FileInput(name='Upload JSON Isotherm')
@@ -83,25 +83,25 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Metadata</h2>'),
-            self.inp_doi,
-            self.inp_adsorbent,
-            self.inp_temperature,
-            self.inp_adsorbates.column,
-            self.inp_isotherm_type,
-            self.inp_measurement_type,
-            self.inp_pressure_scale,
-            pn.pane.HTML("""We recommend using the
-                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""),
-            self.inp_isotherm_data,
-            pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""), self.inp_figure_image),
-            pn.pane.HTML('<h2>Units</h2>'),
-            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
-            self.inp_adsorption_units,
-            pn.pane.HTML('<h2>Digitization</h2>'),
-            self.inp_source_type,
-            self.inp_tabular,
+            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
             self.inp_digitizer,
+            self.inp_doi,
+            pn.pane.HTML('<hr>'),
+            self.inp_source_type,
+            pn.Row(pn.pane.HTML("""Attach Figure Graphics"""), self.inp_figure_image),
+            self.inp_measurement_type,
+            self.inp_adsorbent,
+            self.inp_adsorbates.column,
+            self.inp_temperature,
+            self.inp_isotherm_type,
+            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
+            self.inp_pressure_scale,
+            self.inp_adsorption_units,
+            pn.pane.HTML("""We recommend the
+                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>
+                for data extraction."""),
+            self.inp_isotherm_data,
+            self.inp_tabular,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
         )
@@ -191,6 +191,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
         :param tabs: Panel tabs instance for triggering tab switching.
         """
 
+        # new fields
         self.inp_composition_type = pw.Select(name='Composition type',
                                               options=['Select'] + QUANTITIES['composition_type']['names'])
         self.inp_composition_type.param.watch(self.on_change_composition_type, 'value')
@@ -203,8 +204,8 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         super().__init__(plot, tabs)
 
+        # override fields
         self.inp_adsorbates = Adsorbates(show_controls=True, )
-
         self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
                                                   height=200,
                                                   placeholder=config.MULTI_COMPONENT_EXAMPLE)
@@ -212,16 +213,31 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
         # modified prefill function
         self.btn_prefill.on_click(self.on_click_prefill)
 
+        # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Metadata</h2>'), self.inp_doi, self.inp_adsorbent, self.inp_temperature,
-            self.inp_adsorbates.column, self.inp_isotherm_type, self.inp_measurement_type, self.inp_pressure_scale,
-            pn.pane.HTML("""We recommend using the
-                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>"""),
-            self.inp_isotherm_data, pn.Row(pn.pane.HTML("""Attach Isotherm Graphics"""), self.inp_figure_image),
-            pn.pane.HTML('<h2>Units</h2>'), pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
-            self.inp_adsorption_units, pn.Row(self.inp_composition_type, self.inp_concentration_units),
-            pn.pane.HTML('<h2>Digitization</h2>'), self.inp_source_type, self.inp_digitizer,
-            pn.Row(self.btn_plot, self.btn_prefill, self.inp_json), self.out_info)
+            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
+            self.inp_digitizer,
+            self.inp_doi,
+            pn.pane.HTML('<hr>'),
+            self.inp_source_type,
+            pn.Row(pn.pane.HTML("""Attach Figure Graphics"""), self.inp_figure_image),
+            self.inp_measurement_type,
+            self.inp_adsorbent,
+            self.inp_adsorbates.column,
+            self.inp_temperature,
+            self.inp_isotherm_type,
+            pn.Row(self.inp_pressure_units, self.inp_saturation_pressure),
+            self.inp_pressure_scale,
+            self.inp_adsorption_units,
+            pn.Row(self.inp_composition_type, self.inp_concentration_units),
+            pn.pane.HTML("""We recommend the
+                <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>
+                for data extraction."""),
+            self.inp_isotherm_data,
+            self.inp_tabular,
+            pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
+            self.out_info,
+        )
 
     @property
     def required_inputs(self):
