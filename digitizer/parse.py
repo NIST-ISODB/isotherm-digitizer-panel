@@ -2,6 +2,7 @@
 """Prepare JSON output."""
 from io import StringIO
 import re
+import datetime
 import pandas as pd
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
@@ -38,13 +39,13 @@ def prepare_isotherm_dict(form):
     data['adsorbent'] = {key: adsorbent_json[key] for key in ['name', 'hashkey']}
     try:
         data['temperature'] = int(form.inp_temperature.value)
-    except Exception:
-        raise ValidationError('Could not convert temperature to int.')
+    except ValueError as error_handler:
+        raise ValidationError('Could not convert temperature to int.') from error_handler
 
     adsorbates_json = [find_by_name(a.inp_name.value, QUANTITIES['adsorbates']['json']) for a in form.inp_adsorbates]
     data['adsorbates'] = [{key: adsorbate[key] for key in ['name', 'InChIKey']} for adsorbate in adsorbates_json]
     data['isotherm_type'] = form.inp_isotherm_type.value
-    data['measurement_type'] = form.inp_measurement_type.value
+    data['category'] = form.inp_measurement_type.value
     form_type = 'single-component' if form.__class__.__name__ == 'IsothermSingleComponentForm' else 'multi-component'
     data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value, data['adsorbates'], form_type=form_type)
 
@@ -52,12 +53,15 @@ def prepare_isotherm_dict(form):
     if form.inp_saturation_pressure.value:
         try:
             data['saturationPressure'] = float(form.inp_saturation_pressure.value)
-        except Exception:
-            raise ValidationError('Could not convert saturationPressure to float.')
+        except ValueError as error_handler:
+            raise ValidationError('Could not convert saturationPressure to float.') from error_handler
     data['adsorptionUnits'] = form.inp_adsorption_units.value
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         data['compositionType'] = form.inp_composition_type.value
         data['concentrationUnits'] = form.inp_concentration_units.value
+    else:
+        data['compositionType'] = 'molefraction'  # default for single-component isotherm
+        data['concentrationUnits'] = None
     data['articleSource'] = form.inp_source_type.value
     if form.inp_tabular.value:
         data['tabular_data'] = True
@@ -65,6 +69,15 @@ def prepare_isotherm_dict(form):
     data['associated_content'] = [form.inp_figure_image.filename]
     # 'associated_content' is a list in anticipation of multiple file selection
     # code for getting filenames will change
+
+    # Log entry date
+    data['date'] = datetime.date.today().strftime('%Y-%m-%d')
+    # strftime is not strictly necessary but ensures correct YYYY-MM-DD format
+
+    # Sanitize keys from optional menus
+    for key in data:
+        if data[key] == 'Select':
+            data[key] = None
 
     return data
 
