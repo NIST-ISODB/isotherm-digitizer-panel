@@ -3,4 +3,4 @@
 import os
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
-STATIC_DIR = os.path.join(THIS_DIR, 'static')
+TESTS_STATIC_DIR = os.path.join(THIS_DIR, 'static')

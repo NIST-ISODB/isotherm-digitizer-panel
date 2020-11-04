@@ -1,20 +1,5 @@
-{% extends base %}
-
-{% block postamble %}
-  <style>
-    {% include "style.css" %}
-  </style>
-{% endblock %}
-
-{% block contents %}
-    {% for doc in docs %}
-    {{ embed(doc) if doc.elementid }}
-    {% for root in doc.roots %}
-        {{ embed(root) | indent(10) }}
-    {% endfor %}
-    {% endfor %}
-
-<div id="footer">
+<div id=footer>
+<h4>Supported by</h4>
 <div class="grid-auto">
     <div class="grid-item">
         <a target="_blank" href="https://www.nist.gov"><img src="digitizer/static/graphics/nistident_cent_300ppi.jpg"></a>
@@ -27,5 +12,3 @@
     </div>
 </div>
 </div>
-
-{% endblock %}
