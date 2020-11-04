@@ -66,9 +66,12 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
         return self._column
 
     def append(self, isotherm):  # pylint: disable=W0221
-        """Add isotherm to submission."""
+        """Add isotherm to submission.
+
+        Note: For better usability, we append *on top*.
+        """
         isotherm.parent = self
-        self.data.append(isotherm)
+        self.data.insert(0, isotherm)
 
         if len(self) == 1:
             # we now need submit buttons
