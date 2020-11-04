@@ -44,7 +44,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
                                                   height=200,
                                                   placeholder=config.SINGLE_COMPONENT_EXAMPLE)
-        self.inp_figure_image = pw.FileInput(name='Figure snapshot')
+        self.inp_figure_image = pw.FileInput(name='Figure snapshot', css_classes=['figure-snapshot'])
 
         # units metadata
         self.inp_pressure_units = pw.Select(name='Pressure units',

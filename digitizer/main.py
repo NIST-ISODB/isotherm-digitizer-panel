@@ -7,6 +7,17 @@ from .check import IsothermCheckView
 from .forms import IsothermSingleComponentForm, IsothermMultiComponentForm
 from .config import TEMPLATES_DIR
 
+# js
+js = """
+<script>
+//const fileInput = document.getElementById("document_attachment_doc");
+const fileInput = document.getElementsByClassName("figure-snapshot")[0].children[0];
+window.addEventListener('paste', e => {
+  fileInput.files = e.clipboardData.files;
+});
+</script>
+"""
+
 # load CSS
 with open(os.path.join(TEMPLATES_DIR, 'style.css')) as handle:
     css = handle.read()
@@ -28,4 +39,5 @@ template.main.append(
 </p>''',
                  width=940))
 template.main.append(tabs)
+template.main.append(js)
 template.servable(title='Isotherm Digitizer')
