@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Upload forms"""
-import collections
 import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
@@ -13,7 +12,27 @@ from .parse import prepare_isotherm_dict
 from .load_json import load_isotherm_json
 from .footer import footer
 
-FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
+
+class FigureImage:  # pylint: disable=too-few-public-methods
+    """Representation of digitized image."""
+    def __init__(self, data=None, filename=None):
+        self.data = data
+        self.filename = filename
+
+    def _repr_png_(self):
+        """Return png representation.
+
+        Needed for display in "check" tab.
+        """
+        if self.data:
+            return self.data
+        return ''
+
+    @property
+    def pane(self):
+        """Return PNG pane."""
+        return pn.pane.PNG(object=self, width=400)
+
 
 # TODO: Remove after official bokeh/panel release  # pylint: disable=fixme
 if bk_ver.startswith('2.3'):
@@ -27,7 +46,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
     def __init__(self, plot, tabs):  # pylint: disable=redefined-outer-name
         """Initialize form.
 
-        :param plot: IsothermPlot instance for validation of results.
+        :param plot: IsothermCheckView instance for validation of results.
         :param tabs: Panel tabs instance for triggering tab switching.
         """
         self.plot = plot
@@ -36,7 +55,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         # isotherm metadata
         self.inp_doi = pw.TextInput(name='Article DOI', placeholder='10.1021/jacs.9b01891')
         self.inp_doi.param.watch(self.on_change_doi, 'value')
-        self.inp_temperature = pw.TextInput(name='Temperature', placeholder='303')
+        self.inp_temperature = pw.TextInput(name='Temperature [K]', placeholder='303')
         self.inp_adsorbent = pw.AutocompleteInput(name='Adsorbent Material',
                                                   options=QUANTITIES['adsorbents']['names'],
                                                   placeholder='Zeolite 5A',
@@ -74,9 +93,9 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
         # buttons
         self.btn_prefill = pn.widgets.Button(name='Prefill (default or from JSON)', button_type='primary')
         self.btn_prefill.on_click(self.on_click_prefill)
-        self.out_info = bw.PreText(text='Press "Plot" in order to download json.')
+        self.out_info = bw.PreText(text='Click "Check" in order to download json.')
         self.inp_adsorbates = Adsorbates(show_controls=False, )
-        self.btn_plot = pn.widgets.Button(name='Plot', button_type='primary')
+        self.btn_plot = pn.widgets.Button(name='Check', button_type='primary')
         self.btn_plot.on_click(self.on_click_plot)
 
         for inp in self.required_inputs:
@@ -182,13 +201,13 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable=too-many-instance-attributes
     """Initialize form.
 
-    :param plot: IsothermPlot instance for validation of results.
+    :param plot: IsothermCheckView instance for validation of results.
     :param tabs: Panel tabs instance for triggering tab switching.
     """
     def __init__(self, plot, tabs):
         """Initialize form.
 
-        :param plot: IsothermPlot instance for validation of results.
+        :param plot: IsothermCheckView instance for validation of results.
         :param tabs: Panel tabs instance for triggering tab switching.
         """
 
@@ -216,6 +235,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         # create layout
         self.layout = pn.Column(
+            pn.pane.HTML('<div><b>Warning:</b> The multi-component form is not well tested</div>.'),
             self.inp_digitizer,
             self.inp_doi,
             pn.pane.HTML('<hr>'),
