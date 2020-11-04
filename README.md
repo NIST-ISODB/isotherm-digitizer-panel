@@ -1,5 +1,7 @@
 # Isotherm digitizer for NIST Adsorption Database
 
+Find the digitizer at digitizer.matscreen.com
+
 ## Installation
 
 ```
