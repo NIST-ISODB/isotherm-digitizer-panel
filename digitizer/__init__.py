@@ -8,3 +8,5 @@ class ValidationError(ValueError):
 
 
 MODULE_DIR = os.path.dirname(os.path.realpath(__file__))
+STATIC_DIR = os.path.join(MODULE_DIR, 'static')
+TEMPLATES_DIR = os.path.join(MODULE_DIR, 'templates')

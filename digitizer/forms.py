@@ -11,6 +11,7 @@ from .config import QUANTITIES
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict
 from .load_json import load_isotherm_json
+from .footer import footer
 
 FigureImage = collections.namedtuple('FigureImage', ['data', 'filename'])
 
@@ -83,7 +84,6 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
             self.inp_digitizer,
             self.inp_doi,
             pn.pane.HTML('<hr>'),
@@ -104,6 +104,7 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
             self.inp_tabular,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
+            footer,
         )
 
     @property
@@ -215,7 +216,6 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
             self.inp_digitizer,
             self.inp_doi,
             pn.pane.HTML('<hr>'),
@@ -237,6 +237,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             self.inp_tabular,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
+            footer,
         )
 
     @property

@@ -7,9 +7,9 @@ import pytest
 
 from digitizer.load_json import load_isotherm_json
 from digitizer.forms import IsothermSingleComponentForm
-from . import STATIC_DIR
+from . import TESTS_STATIC_DIR
 
-SAMPLE_ISOTHERMS = glob.glob(os.path.join(STATIC_DIR, '*.json'))
+SAMPLE_ISOTHERMS = glob.glob(os.path.join(TESTS_STATIC_DIR, '*.json'))
 
 
 @pytest.mark.parametrize('filename', SAMPLE_ISOTHERMS)

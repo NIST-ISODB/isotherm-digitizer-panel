@@ -5,6 +5,7 @@ import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
 from .submission import Submissions, Isotherm
+from .footer import footer
 
 TOOLS = ['pan', 'wheel_zoom', 'box_zoom', 'reset', 'save']
 
@@ -105,10 +106,5 @@ class IsothermPlot():
     @property
     def layout(self):
         """Return layout."""
-        return pn.Column(
-            pn.pane.HTML("""<h2>Isotherm plot</h2>"""),
-            self.row,
-            self.inp_pressure_scale,
-            pn.Row(self.btn_download, self.btn_add),
-            self.submissions.layout,
-        )
+        return pn.Column(self.row, self.inp_pressure_scale, pn.Row(self.btn_download, self.btn_add),
+                         self.submissions.layout, footer)
