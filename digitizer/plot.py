@@ -106,7 +106,6 @@ class IsothermPlot():
     def layout(self):
         """Return layout."""
         return pn.Column(
-            pn.pane.HTML("""<h2>Isotherm plot</h2>"""),
             self.row,
             self.inp_pressure_scale,
             pn.Row(self.btn_download, self.btn_add),

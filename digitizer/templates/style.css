@@ -2,3 +2,21 @@ div.required label:after {
     content:" *";
     color: #ff0000;
 }
+
+div.grid-auto {
+    max-width: 940px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(90px,1fr));
+    grid-column-gap: 30px;
+    grid-row-gap: 30px;
+}
+
+div.grid-item {
+    text-align: center;
+}
+
+div.grid-item img {
+    max-width: 100%;
+    max-height: 60px;
+    position: relative;
+}

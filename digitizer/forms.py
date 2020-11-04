@@ -83,7 +83,6 @@ class IsothermSingleComponentForm():  # pylint:disable=too-many-instance-attribu
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
             self.inp_digitizer,
             self.inp_doi,
             pn.pane.HTML('<hr>'),
@@ -215,7 +214,6 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         # create layout
         self.layout = pn.Column(
-            pn.pane.HTML('<h2>Isotherm Digitizer</h2>'),
             self.inp_digitizer,
             self.inp_doi,
             pn.pane.HTML('<hr>'),
