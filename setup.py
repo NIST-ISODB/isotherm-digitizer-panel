@@ -15,23 +15,20 @@ if __name__ == '__main__':
         author_email='leopold.talirz@gmail.com',
         #url='to/be/decided',
         install_requires=[
-            'panel @ https://github.com/ltalirz/panel/archive/for-digitizer.zip',
-            #'bokeh~=2.1',
-            #'panel~=0.9',
+            'panel~=0.10.1',
+            'bokeh~=2.3.0.dev5',
             'requests',
             'requests_cache',
             'pandas~=1.0.5',
-            #ipython
-            #notebook
             #crossrefapi
             #python-dateutil
             #ase
-            #manage-crystal #by danieleongari
+            #manage-crystal
         ],
         extras_require={
             'pre-commit': [
                 'pre-commit~=2.2',
-                'pylint~=2.5.0',
+                'pylint~=2.6.0',
             ],
             'tests': [
                 'pytest~=5.4',
