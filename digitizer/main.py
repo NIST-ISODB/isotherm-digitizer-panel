@@ -3,7 +3,7 @@
 """
 import os
 import panel as pn
-from .plot import IsothermPlot
+from .check import IsothermCheckView
 from .forms import IsothermSingleComponentForm, IsothermMultiComponentForm
 from . import TEMPLATES_DIR
 
@@ -13,11 +13,11 @@ with open(os.path.join(TEMPLATES_DIR, 'style.css')) as handle:
 pn.extension(raw_css=[css])
 
 # prepare tabs
-plot = IsothermPlot()
+plot = IsothermCheckView()
 
 tabs = pn.Tabs(css_classes=['main-tab'])
 tabs.extend([('Single-component', IsothermSingleComponentForm(plot=plot, tabs=tabs).layout),
-             ('Multi-component', IsothermMultiComponentForm(plot=plot, tabs=tabs).layout), ('Plot', plot.layout)])
+             ('Multi-component', IsothermMultiComponentForm(plot=plot, tabs=tabs).layout), ('Check', plot.layout)])
 
 # create layout
 template = pn.template.BootstrapTemplate(title='Isotherm Digitizer')

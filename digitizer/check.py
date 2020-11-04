@@ -15,7 +15,8 @@ def get_bokeh_plot(isotherm_dict, pressure_scale='linear'):
 
     :returns: bokeh Figure instance
     """
-    p = figure(tools=TOOLS, x_axis_type=pressure_scale)  # pylint: disable=invalid-name
+    title = f'{isotherm_dict["articleSource"]}, {isotherm_dict["adsorbent"]["name"]}, {isotherm_dict["temperature"]} K'
+    p = figure(tools=TOOLS, x_axis_type=pressure_scale, title=title)  # pylint: disable=invalid-name
 
     pressures = [point['pressure'] for point in isotherm_dict['isotherm_data']]
 
@@ -48,15 +49,22 @@ def get_bokeh_plot(isotherm_dict, pressure_scale='linear'):
     return p
 
 
-class IsothermPlot():
-    """Plot of isotherm data for consistency check.
+def _get_figure_pane(figure_image):
+    """Get Figure pane for display."""
+    if figure_image:
+        return figure_image.pane
+    return pn.pane.HTML('')
+
+
+class IsothermCheckView():
+    """Consistency checks for digitized isotherms.
     """
     def __init__(self, isotherm_dict=None, figure_image=None):
         """Create plot of isotherm data for consistency check.
 
         :param isotherm_dict: Isotherm dictionary (optional).
         """
-        self.row = pn.Row(figure(tools=TOOLS))
+        self.row = pn.Row(figure(tools=TOOLS), _get_figure_pane(figure_image))
         self._isotherm_dict = isotherm_dict
         self._figure_image = figure_image
 
@@ -83,6 +91,7 @@ class IsothermPlot():
         self._isotherm_dict = isotherm_dict
         self._figure_image = figure_image
         self.row[0] = get_bokeh_plot(isotherm_dict)
+        self.row[1] = _get_figure_pane(figure_image)
 
     @property
     def isotherm(self):
