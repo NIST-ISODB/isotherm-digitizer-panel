@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Upload forms"""
-import json
 import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
@@ -25,7 +24,7 @@ else:
 class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instance-attributes
     """HTML form for uploading new isotherms."""
 
-    isotherm = Instance(Isotherm)
+    isotherm = Instance(Isotherm)  # this traitlet is observed by the "check" view
 
     def __init__(self, tabs):  # pylint: disable=redefined-outer-name
         """Initialize form.
@@ -71,13 +70,12 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_digitizer = pw.TextInput(name='Digitized by', placeholder='Your full name')
 
         # fill form from JSON upload
-        #self.json = pw.TextInput(name='json representation') ""  # updating this will trigger a reload of the form
         self.inp_json = pw.FileInput(name='Upload JSON Isotherm')
-        self.inp_json.param.watch(self.prefill_from_json, 'value')
+        self.inp_json.param.watch(self.populate_from_json, 'value')
 
         # buttons
         self.btn_prefill = pn.widgets.Button(name='Prefill (default or from JSON)', button_type='primary')
-        self.btn_prefill.on_click(self.on_click_prefill)
+        self.btn_prefill.on_click(self.on_click_populate)
         self.out_info = bw.PreText(text='Click "Check" in order to download json.')
         self.inp_adsorbates = Adsorbates(show_controls=False, )
         self.btn_plot = pn.widgets.Button(name='Check', button_type='primary')
@@ -122,12 +120,12 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_figure_image.value = figure_image.data
         self.inp_figure_image.filename = figure_image.filename
 
-    def prefill_from_json(self, event):
+    def populate_from_json(self, event):
         """Prefills form from JSON.
 
         This function observes the inp_json field.
         """
-        self.isotherm = Isotherm(json=json.loads(event.new), figure_image=None)
+        load_isotherm_json(form=self, json_string=event.new)
 
     @property
     def required_inputs(self):
@@ -151,23 +149,29 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         else:
             self.inp_saturation_pressure.disabled = True
 
-    def on_click_prefill(self, event):  # pylint: disable=unused-argument
-        """Prefill form for testing purposes."""
+    def on_click_populate(self, event):  # pylint: disable=unused-argument
+        """Populate form, either from JSON or with default values."""
         if self.inp_json.value:
-            load_isotherm_json(form=self, json_string=self.inp_json.value)
-            return
+            json_string = self.inp_json.value
+            load_isotherm_json(form=self, json_string=json_string)
+            self.inp_figure_image.value = None
+            self.inp_figure_image.filename = None
+        else:
+            # Note: this could be replaced by loading a sample isotherm JSON (but makes it harder to edit defaults)
+            # with open(DEFAULT_ISOTHERM_FILE) as handle:
+            #     json_string = handle.read()
+            # load_isotherm_json(form=self, json_string=json_string)
 
-        # Todo: Replace this by loading of a sample isotherm JSON
-        for inp in self.required_inputs:
-            try:
-                inp.value = inp.placeholder
-            except AttributeError:
-                # select fields have no placeholder (but are currently pre-filled)
-                pass
+            for inp in self.required_inputs:
+                try:
+                    inp.value = inp.placeholder
+                except AttributeError:
+                    # select fields have no placeholder (but are currently pre-filled)
+                    pass
 
-        self.inp_pressure_units.value = 'bar'
-        self.inp_figure_image.value = config.FIGURE_EXAMPLE
-        self.inp_figure_image.filename = config.FIGURE_FILENAME_EXAMPLE
+            self.inp_pressure_units.value = 'bar'
+            self.inp_figure_image.value = config.FIGURE_EXAMPLE
+            self.inp_figure_image.filename = config.FIGURE_FILENAME_EXAMPLE
 
     def on_click_check(self, event):  # pylint: disable=unused-argument
         """Check isotherm."""
@@ -233,7 +237,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
                                                   placeholder=config.MULTI_COMPONENT_EXAMPLE)
 
         # modified prefill function
-        self.btn_prefill.on_click(self.on_click_prefill)
+        self.btn_prefill.on_click(self.on_click_populate)
 
         # create layout
         self.layout = pn.Column(
@@ -267,9 +271,9 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
         """Required inputs."""
         return super().required_inputs + [self.inp_composition_type]
 
-    def on_click_prefill(self, event):  # pylint: disable=unused-argument
+    def on_click_populate(self, event):  # pylint: disable=unused-argument
         """Prefill form for testing purposes."""
-        super().on_click_prefill(event)
+        super().on_click_populate(event)
         self.inp_composition_type.value = 'Mole Fraction'
 
     def on_change_composition_type(self, event):
