@@ -105,7 +105,7 @@ def parse_isotherm_data(measurements, adorbates, form_type='single-component'):
         comment='#',
         header=None,
         engine='python')
-    measurements = measurements.to_numpy()
+    measurements = measurements.to_numpy(dtype=float)
     return [parse_pressure_row(pressure, adorbates, form_type) for pressure in measurements]
 
 
