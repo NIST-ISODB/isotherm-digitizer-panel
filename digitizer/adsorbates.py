@@ -4,6 +4,7 @@ import collections
 import panel as pn
 import panel.widgets as pw
 from .config import QUANTITIES
+from . import restrict_kwargs
 
 
 class Adsorbate():  # pylint: disable=too-few-public-methods
@@ -15,7 +16,8 @@ class Adsorbate():  # pylint: disable=too-few-public-methods
                                              placeholder='Methane',
                                              options=QUANTITIES['adsorbates']['names'],
                                              case_sensitive=False,
-                                             css_classes=['required'])
+                                             css_classes=['required'],
+                                             **restrict_kwargs)
         self.row = pn.Row(self.inp_name)
 
     @property

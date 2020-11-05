@@ -17,7 +17,7 @@ def lookup_species_name(species, species_type):
         key_type = 'hashkey'
     else:
         raise AttributeError('Species type {} not understood'.format(species_type))
-    if key_type in species.keys():
+    if key_type in species.keys() and species[key_type]:
         # Look up by hash first
         output = find_by_key(species[key_type], key_type, QUANTITIES[species_type]['json'])
     elif 'name' in species.keys():
