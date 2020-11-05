@@ -100,7 +100,7 @@ class IsothermCheckView(HasTraits):
             self.isotherm = change['new']
             # todo: reload multi-component form depending on isotherm data  # pylint: disable=fixme
             for form in self.observed_forms[0:1]:
-                form.isotherm = change['new']
+                form.populate_from_isotherm(isotherm=change['new'])
 
         self.submissions = Submissions()
         self.submissions.observe(on_load_update, names=['loaded_isotherm'])

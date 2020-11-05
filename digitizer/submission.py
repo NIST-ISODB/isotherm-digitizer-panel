@@ -88,13 +88,18 @@ class Submissions(HasTraits):  # pylint: disable=R0901
 
         Note: For better usability, we append *on top*.
         """
+        if isotherm in self.data:
+            print('Isotherm already added')
+            return
+
         isotherm.parent = self
         self.data.insert(0, isotherm)
 
         if len(self) == 1:
             # we now need submit buttons
             self._column.insert(-1, self._submit_btns)
-        self._column.insert(-2, isotherm.row)
+
+        self._column.insert(0, isotherm.row)
 
     def remove(self, isotherm):  # pylint: disable=W0221
         """Remove isotherm from list."""
@@ -109,16 +114,26 @@ class Submissions(HasTraits):  # pylint: disable=R0901
         """Create zip file for download."""
         memfile = BytesIO()
         with zipfile.ZipFile(memfile, mode='w', compression=zipfile.ZIP_DEFLATED) as zhandle:
-            for i, isotherm in enumerate(self):
-                directory = isotherm.json['DOI'].replace('/', '')
+
+            isotherm_counters = {}
+
+            for isotherm in self:
+                doi = isotherm.json['DOI']
+                directory = doi.replace('/', '')
+
+                if doi not in isotherm_counters:
+                    isotherm_counters[doi] = 1
 
                 if isotherm.figure_image:
-                    filename = '{d}/{d}.Isotherm{i}_{f}'.format(d=directory, i=i + 1, f=isotherm.figure_image.filename)
+                    filename = '{d}/{d}.Isotherm{i}_{f}'.format(d=directory,
+                                                                i=isotherm_counters[doi],
+                                                                f=isotherm.figure_image.filename)
                     isotherm.json['associated_content'] = [filename]
                     zhandle.writestr(filename, isotherm.figure_image.data)
 
-                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory, i=i + 1)
+                filename = '{d}/{d}.Isotherm{i}.json'.format(d=directory, i=isotherm_counters[doi])
                 zhandle.writestr(filename, isotherm.json_str)
+                isotherm_counters[doi] += 1
 
         memfile.seek(0)
         return memfile
