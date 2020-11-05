@@ -7,7 +7,7 @@ from bokeh import __version__ as bk_ver
 from traitlets import HasTraits, Instance
 
 from . import ValidationError, config
-from .config import QUANTITIES
+from .config import QUANTITIES, BIBLIO_API_URL
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict, FigureImage
 from .load_json import load_isotherm_json, load_isotherm_dict
@@ -77,6 +77,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.btn_prefill = pn.widgets.Button(name='Prefill (default or from JSON)', button_type='primary')
         self.btn_prefill.on_click(self.on_click_populate)
         self.out_info = bw.PreText(text='Click "Check" in order to download json.')
+        #self.out_info = pn.pane.Markdown(text='Click "Check" in order to download json.')
         self.inp_adsorbates = Adsorbates(show_controls=False, )
         self.btn_plot = pn.widgets.Button(name='Check', button_type='primary')
         self.btn_plot.on_click(self.on_click_check)
@@ -139,7 +140,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         """Warn, if DOI already known."""
         doi = event.new
         if doi in config.DOIs:
-            self.log('DOI {} already present in database.'.format(doi), level='warning')
+            self.log(f'{doi} already present in database (see {BIBLIO_API_URL}/{doi}.json ).', level='warning')
 
     def on_change_pressure_units(self, event):
         """Toggle saturation pressure input depending on pressure units selection."""
@@ -184,6 +185,9 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         figure_image = FigureImage(data=self.inp_figure_image.value,
                                    filename=self.inp_figure_image.filename) if self.inp_figure_image.value else None
 
+        self.btn_plot.button_type = 'primary'
+        self.log('')
+
         self.isotherm = Isotherm(data, figure_image)
         self.tabs.active = 2
 
@@ -194,9 +198,9 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         to tabs (TODO: open issue on panel for this).
         """
         #self.layout.remove(self.out_info)
-        self.layout.pop(-1)
+        self.layout.pop(-2)  # -1 is footer for the moment
         self.out_info.text = msg
-        self.layout.append(self.out_info)
+        self.layout.insert(-1, self.out_info)  # inserts *before* -1
 
         if level == 'info':
             self.btn_plot.button_type = 'primary'
