@@ -3,22 +3,15 @@
 import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
-from bokeh import __version__ as bk_ver
 from traitlets import HasTraits, Instance
 
-from . import ValidationError, config
+from . import ValidationError, config, restrict_kwargs
 from .config import QUANTITIES, BIBLIO_API_URL
 from .adsorbates import Adsorbates
 from .parse import prepare_isotherm_dict, FigureImage
 from .load_json import load_isotherm_json, load_isotherm_dict
 from .footer import footer
 from .submission import Isotherm
-
-# TODO: Remove after official bokeh/panel release  # pylint: disable=fixme
-if bk_ver.startswith('2.3'):
-    restrict_kwargs = {'restrict': False}
-else:
-    restrict_kwargs = {}
 
 
 class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instance-attributes
@@ -78,7 +71,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.btn_prefill.on_click(self.on_click_populate)
         self.out_info = bw.PreText(text='Click "Check" in order to download json.')
         #self.out_info = pn.pane.Markdown(text='Click "Check" in order to download json.')
-        self.inp_adsorbates = Adsorbates(show_controls=False, )
+        self.inp_adsorbates = Adsorbates(show_controls=False)
         self.btn_plot = pn.widgets.Button(name='Check', button_type='primary')
         self.btn_plot.on_click(self.on_click_check)
 
