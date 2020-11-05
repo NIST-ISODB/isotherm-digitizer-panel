@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """Isotherm plotting."""
 from io import StringIO
+from traitlets import HasTraits, observe, Instance
 import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
+
 from .submission import Submissions, Isotherm
 from .footer import footer
 
@@ -56,49 +58,58 @@ def _get_figure_pane(figure_image):
     return pn.pane.HTML('')
 
 
-class IsothermCheckView():
+class IsothermCheckView(HasTraits):
     """Consistency checks for digitized isotherms.
     """
-    def __init__(self, isotherm_dict=None, figure_image=None):
-        """Create plot of isotherm data for consistency check.
+    isotherm = Instance(Isotherm)
 
-        :param isotherm_dict: Isotherm dictionary (optional).
+    def __init__(self, isotherm=None, observed_forms=None):
+        """Create check of isotherm data for consistency check.
+
+        :param isotherm: Isotherm instance (optional).
+        :param observed_forms: list of IsothermForm instances to observe
         """
-        self.row = pn.Row(figure(tools=TOOLS), _get_figure_pane(figure_image))
-        self._isotherm_dict = isotherm_dict
-        self._figure_image = figure_image
+        super().__init__()
+
+        if isotherm:
+            self.isotherm = isotherm
+        else:
+            self.row = pn.Row(figure(tools=TOOLS), _get_figure_pane(None))
 
         self.btn_download = pn.widgets.FileDownload(filename='data.json',
                                                     button_type='primary',
                                                     callback=self.on_click_download)
-        self.btn_download.data = ''  # bug in panel https://github.com/holoviz/panel/issues/1598
         self.btn_add = pn.widgets.Button(name='Add to submission', button_type='primary')
         self.btn_add.on_click(self.on_click_add)
 
         self.inp_pressure_scale = pn.widgets.RadioButtonGroup(name='Pressure scale', options=['linear', 'log'])
         self.inp_pressure_scale.param.watch(self.on_click_set_scale, 'value')
 
+        # observe input forms
+        def on_change_update(change):
+            self.isotherm = change['new']
+
+        if observed_forms:
+            for form in observed_forms:
+                form.observe(on_change_update, names=['isotherm'])
+
+        # observe submission form and propagate changes to input forms
+        self.observed_forms = observed_forms
+
+        def on_load_update(change):
+            self.isotherm = change['new']
+            # todo: reload multi-component form depending on isotherm data  # pylint: disable=fixme
+            for form in self.observed_forms[0:1]:
+                form.isotherm = change['new']
+
         self.submissions = Submissions()
+        self.submissions.observe(on_load_update, names=['loaded_isotherm'])
 
-    def update(self, isotherm_dict, figure_image=None):
-        """Update isotherm plot with provided data.
-
-        Updates figure as well as internal data representation.
-
-        :param isotherm_dict: Dictionary with parsed isotherm data.
-        :param figure_image: Byte stream with figure snapshot
-        """
-        self._isotherm_dict = isotherm_dict
-        self._figure_image = figure_image
-        self.row[0] = get_bokeh_plot(isotherm_dict)
-        self.row[1] = _get_figure_pane(figure_image)
-
-    @property
-    def isotherm(self):
-        """Return Isotherm() instance."""
-        isotherm_dict = self._isotherm_dict
-        display_name = '{} ({})'.format(isotherm_dict['articleSource'], isotherm_dict['DOI'])
-        return Isotherm(name=display_name, json=isotherm_dict, figure_image=self._figure_image)
+    @observe('isotherm')
+    def _observe_isotherm(self, change):
+        isotherm = change['new']
+        self.row[0] = get_bokeh_plot(isotherm.json)
+        self.row[1] = _get_figure_pane(isotherm.figure_image)
 
     def on_click_download(self):
         """Download JSON file."""
@@ -110,7 +121,7 @@ class IsothermCheckView():
 
     def on_click_set_scale(self, event):  # pylint: disable=unused-argument
         """Set pressure scale."""
-        self.row[0] = get_bokeh_plot(self._isotherm_dict, pressure_scale=self.inp_pressure_scale.value)
+        self.row[0] = get_bokeh_plot(self.isotherm.json, pressure_scale=self.inp_pressure_scale.value)
 
     @property
     def layout(self):

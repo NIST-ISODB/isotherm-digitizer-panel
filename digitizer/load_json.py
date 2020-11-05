@@ -34,17 +34,25 @@ def load_isotherm_json(form, json_string):  # pylint: disable=too-many-branches,
     :param json_string: JSON string
     :param form: IsothermForm instance to fill
     """
-    input_data = json.loads(json_string)
+    return load_isotherm_dict(form, json.loads(json_string))
+
+
+def load_isotherm_dict(form, isotherm_dict):  # pylint: disable=too-many-branches,too-many-statements
+    """Populate form with data from JSON.
+
+    :param isotherm_dict: isotherm dictionary
+    :param form: IsothermForm instance to fill
+    """
     # Pre-process some fields
     try:
-        input_data['isotherm_type'] = input_data['isotherm_type'].capitalize()
-    except KeyError:
+        isotherm_dict['isotherm_type'] = isotherm_dict['isotherm_type'].capitalize()
+    except (KeyError, AttributeError):
         pass
 
     for short, full in CATEGORY_CONV:
         try:
-            if input_data['category'] == short:
-                input_data['category'] = full
+            if isotherm_dict['category'] == short:
+                isotherm_dict['category'] = full
         except KeyError:
             pass
 
@@ -60,20 +68,20 @@ def load_isotherm_json(form, json_string):  # pylint: disable=too-many-branches,
     ]
     for (inp, key) in mappings:
         try:
-            inp.value = str(input_data[key])
+            inp.value = str(isotherm_dict[key])
         except KeyError:
             pass
 
     # Special Import Handler for pressure units
-    if input_data['pressureUnits'] == 'RELATIVE':
+    if isotherm_dict['pressureUnits'] == 'RELATIVE':
         form.inp_pressure_units.value = 'RELATIVE (specify units)'
         try:
-            form.inp_saturation_pressure.value = str(input_data['saturationPressure'])
+            form.inp_saturation_pressure.value = str(isotherm_dict['saturationPressure'])
         except KeyError:
             pass
     else:
         try:
-            form.inp_pressure_units.value = input_data['pressureUnits']
+            form.inp_pressure_units.value = isotherm_dict['pressureUnits']
         except KeyError:
             pass
 
@@ -81,13 +89,13 @@ def load_isotherm_json(form, json_string):  # pylint: disable=too-many-branches,
     #   Allow true = 1
     for (inp, key) in [(form.inp_pressure_scale, 'log_scale'), (form.inp_tabular, 'tabular_data')]:
         try:
-            if input_data[key] or input_data[key] == 1:
+            if isotherm_dict[key] or isotherm_dict[key] == 1:
                 inp.value = True
         except KeyError:
             pass
 
     # Look up adsorbent from input JSON
-    form.inp_adsorbent.value = lookup_species_name(input_data['adsorbent'], 'adsorbents')
+    form.inp_adsorbent.value = lookup_species_name(isotherm_dict['adsorbent'], 'adsorbents')
 
     if form.__class__.__name__ == 'IsothermMultiComponentForm':
         # Fields specific to Multicomponent Isotherms
@@ -97,25 +105,25 @@ def load_isotherm_json(form, json_string):  # pylint: disable=too-many-branches,
                             ('concentration', 'Concentration (specify units)')]
         for short, full in composition_conv:
             try:
-                if input_data['compositionType'] == short:
-                    input_data['compositionType'] = full
+                if isotherm_dict['compositionType'] == short:
+                    isotherm_dict['compositionType'] = full
             except KeyError:
                 pass
         try:
-            form.inp_composition_type.value = input_data['compositionType']
+            form.inp_composition_type.value = isotherm_dict['compositionType']
         except KeyError:
             pass
         if form.inp_composition_type.value == 'Concentration (specify units)':
             form.inp_concentration_units.disabled = False
             try:
-                form.inp_concentration_units.value = input_data['concentrationUnits']
+                form.inp_concentration_units.value = isotherm_dict['concentrationUnits']
             except KeyError:
                 pass
         # Convert the JSON isotherm data to columns and fill in adsorbates
-        form.inp_isotherm_data.value = read_multicomponent_columns(form, input_data)
+        form.inp_isotherm_data.value = read_multicomponent_columns(form, isotherm_dict)
     else:
         # Convert the JSON isotherm data to columns and fill in adsorbate
-        form.inp_isotherm_data.value = read_singlecomponent_columns(form, input_data)
+        form.inp_isotherm_data.value = read_singlecomponent_columns(form, isotherm_dict)
 
 
 def read_singlecomponent_columns(form, input_data):

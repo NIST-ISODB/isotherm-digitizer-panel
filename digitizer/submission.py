@@ -1,28 +1,43 @@
 # -*- coding: utf-8 -*-
 """Store stack of submissions"""
 from io import BytesIO
-import collections
 import uuid
 import os
 import zipfile
+from traitlets import HasTraits, Instance
 import panel as pn
 import panel.widgets as pw
 from .config import SUBMISSION_FOLDER
 
 
-class Isotherm():
+class Isotherm(HasTraits):
     """Represents single isotherm."""
-    def __init__(self, name, json, figure_image=None):
-        self.name = name
+    def __init__(self, json, figure_image=None, name=None):
+        super().__init__()
+        self.parent = None
         self.json = json
         self.figure_image = figure_image
+        self.name = name or '{} ({})'.format(json['articleSource'], json['DOI'])
 
-        self.btn_remove = pw.Button(name='X', button_type='primary')
+        self.btn_remove = pw.Button(name='❌', button_type='primary')
         self.btn_remove.on_click(self.on_click_remove)
+
+        self.btn_load = pw.Button(name='📂', button_type='primary')
+        self.btn_load.on_click(self.on_click_load)
+
+        row = pn.GridSpec(height=35)
+        row[0, 0:18] = pn.pane.HTML(self.name)
+        row[0, 19] = self.btn_load
+        row[0, 20] = self.btn_remove
+        self.row = row
 
     def on_click_remove(self, event):  # pylint: disable=unused-argument
         """Remove this adsorbent from the list."""
         self.parent.remove(self)  # pylint: disable=no-member
+
+    def on_click_load(self, event):  # pylint: disable=unused-argument
+        """Load data from this isotherm."""
+        self.parent.loaded_isotherm = self
 
     @property
     def json_str(self):
@@ -30,24 +45,27 @@ class Isotherm():
         import json  # pylint: disable=import-outside-toplevel
         return json.dumps(self.json, ensure_ascii=False, sort_keys=True, indent=4)
 
-    @property
-    def row(self):
-        """Return visualization."""
-        row = pn.GridSpec(height=35)
-        row[0, 0:19] = pn.pane.HTML(self.name)
-        row[0, 20] = self.btn_remove
-        return row
 
-
-class Submissions(collections.UserList):  # pylint: disable=R0901
+class Submissions(HasTraits):  # pylint: disable=R0901
     """Stores stack of isotherms for combined submission.
 
-    Note: This class inherits from collections.UserList for automatic implementation of len() and the subscript
-         operator. The internal list is stored in self.data.
+    The Submissions.loaded_isotherm trait can be observed in order to react to changes::
+
+        def on_load(change):
+            ...
+
+        s = Submissions()
+        s.observed_forms(on_change, names=['loaded_isotherm'])
+
+
     """
+
+    loaded_isotherm = Instance(Isotherm)
+
     def __init__(self):
         """Initialize empty submission."""
         super().__init__()
+        self.data = []
 
         self.btn_submit = pw.Button(name='Submit', button_type='primary')
         self.btn_submit.on_click(self.on_click_submit)
@@ -118,3 +136,9 @@ class Submissions(collections.UserList):  # pylint: disable=R0901
     def on_click_download(self):
         """Download zip file."""
         return self.get_zip_file()
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, item):
+        return self.data[item]

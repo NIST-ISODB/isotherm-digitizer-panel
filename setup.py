@@ -17,6 +17,7 @@ if __name__ == '__main__':
         install_requires=[
             'panel~=0.10.1',
             'bokeh~=2.3.0.dev5',
+            'traitlets',
             'requests',
             'requests_cache',
             'pandas~=1.0.5',

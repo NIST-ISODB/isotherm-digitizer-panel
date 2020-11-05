@@ -4,6 +4,8 @@ from io import StringIO
 import re
 import datetime
 import pandas as pd
+import panel as pn
+
 from .config import find_by_name, QUANTITIES
 from . import ValidationError
 
@@ -156,3 +158,24 @@ def parse_pressure_row(pressure, adsorbates, form_type):
             pass
             # TODO  # pylint: disable=fixme
     return measurement
+
+
+class FigureImage:  # pylint: disable=too-few-public-methods
+    """Representation of digitized image."""
+    def __init__(self, data=None, filename=None):
+        self.data = data
+        self.filename = filename
+
+    def _repr_png_(self):
+        """Return png representation.
+
+        Needed for display in "check" tab.
+        """
+        if self.data:
+            return self.data
+        return ''
+
+    @property
+    def pane(self):
+        """Return PNG pane."""
+        return pn.pane.PNG(object=self, width=400)

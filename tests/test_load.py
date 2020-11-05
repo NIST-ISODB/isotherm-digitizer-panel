@@ -16,7 +16,7 @@ SAMPLE_ISOTHERMS = glob.glob(os.path.join(TESTS_STATIC_DIR, '*.json'))
 def test_load_isotherm_json(filename):
     """Test that common input formats are parsed correctly."""
     json_string = open(filename, 'r').read()
-    form = IsothermSingleComponentForm(plot=None, tabs=None)
+    form = IsothermSingleComponentForm(tabs=None)
     load_isotherm_json(form=form, json_string=json_string)
 
     json_dict = json.loads(json_string)
