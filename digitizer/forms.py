@@ -5,7 +5,7 @@ import panel as pn
 import panel.widgets as pw
 import bokeh.models.widgets as bw
 from bokeh import __version__ as bk_ver
-from traitlets import HasTraits, Instance, observe
+from traitlets import HasTraits, Instance
 
 from . import ValidationError, config
 from .config import QUANTITIES
@@ -81,7 +81,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.out_info = bw.PreText(text='Click "Check" in order to download json.')
         self.inp_adsorbates = Adsorbates(show_controls=False, )
         self.btn_plot = pn.widgets.Button(name='Check', button_type='primary')
-        self.btn_plot.on_click(self.on_click_plot)
+        self.btn_plot.on_click(self.on_click_check)
 
         for inp in self.required_inputs:
             inp.css_classes = ['required']
@@ -111,9 +111,16 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
             footer,
         )
 
-    @observe('isotherm')
-    def _observe_isotherm(self, change):
-        load_isotherm_dict(form=self, isotherm_dict=change['new'].json)
+    def populate_from_isotherm(self, isotherm):
+        """Populate form from isotherm instance.
+
+        :param isotherm:  Isotherm instance
+        """
+        load_isotherm_dict(form=self, isotherm_dict=isotherm.json)
+
+        figure_image = isotherm.figure_image
+        self.inp_figure_image.value = figure_image.data
+        self.inp_figure_image.filename = figure_image.filename
 
     def prefill_from_json(self, event):
         """Prefills form from JSON.
@@ -162,8 +169,8 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_figure_image.value = config.FIGURE_EXAMPLE
         self.inp_figure_image.filename = config.FIGURE_FILENAME_EXAMPLE
 
-    def on_click_plot(self, event):  # pylint: disable=unused-argument
-        """Plot isotherm."""
+    def on_click_check(self, event):  # pylint: disable=unused-argument
+        """Check isotherm."""
         try:
             data = prepare_isotherm_dict(self)
         except (ValidationError, ValueError) as exc:
