@@ -96,3 +96,7 @@ with open(os.path.join(MODULE_DIR, 'static', FIGURE_FILENAME_EXAMPLE), 'rb') as 
     FIGURE_EXAMPLE = handle.read()
 
 SUBMISSION_FOLDER = os.getenv('DIGITIZER_SUBMISSION_FOLDER', os.path.join(MODULE_DIR, os.pardir, 'submissions'))
+STATIC_DIR = os.path.join(MODULE_DIR, 'static')
+TEMPLATES_DIR = os.path.join(MODULE_DIR, 'templates')
+
+DEFAULT_ISOTHERM_FILE = os.path.join(STATIC_DIR, 'default_isotherm.json')

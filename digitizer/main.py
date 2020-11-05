@@ -5,7 +5,7 @@ import os
 import panel as pn
 from .check import IsothermCheckView
 from .forms import IsothermSingleComponentForm, IsothermMultiComponentForm
-from . import TEMPLATES_DIR
+from .config import TEMPLATES_DIR
 
 # load CSS
 with open(os.path.join(TEMPLATES_DIR, 'style.css')) as handle:
