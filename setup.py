@@ -17,10 +17,11 @@ if __name__ == '__main__':
         install_requires=[
             'panel~=0.10.1',
             'bokeh~=2.3.0.dev5',
-            'traitlets',
-            'requests',
-            'requests_cache',
+            'traitlets~=4.3.3',
+            'requests~=2.24.0',
+            'requests_cache~=0.5.2',
             'pandas~=1.0.5',
+            'pydenticon~=0.3.1',
             #crossrefapi
             #python-dateutil
             #ase
