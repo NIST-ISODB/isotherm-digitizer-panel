@@ -10,6 +10,7 @@ from . import MODULE_DIR
 requests_cache.install_cache('matdb_cache')
 
 BASE_URL = 'https://adsorption.nist.gov/isodb/api'
+BIBLIO_API_URL = BASE_URL + '/biblio'
 
 QUANTITY_API_MAPPING = {
     'adsorbents': '/materials.json',
