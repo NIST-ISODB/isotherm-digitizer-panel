@@ -12,6 +12,7 @@
     },
     "adsorptionUnits": "mmol/g",
     "articleSource": "Figure 1a",
+    "custom": "Example isotherm for testing the digitizer.",
     "associated_content": [
         "Figure_S5a.png"
     ],

@@ -15,8 +15,8 @@ if __name__ == '__main__':
         author_email='leopold.talirz@gmail.com',
         #url='to/be/decided',
         install_requires=[
-            'panel~=0.10.1',
-            'bokeh~=2.3.0.dev5',
+            'panel~=0.11',
+            'bokeh~=2.3.0',
             'traitlets~=4.3.3',
             'requests~=2.24.0',
             'requests_cache~=0.5.2',

@@ -64,6 +64,7 @@ def load_isotherm_dict(form, isotherm_dict):  # pylint: disable=too-many-branche
         (form.inp_measurement_type, 'category'),
         (form.inp_adsorption_units, 'adsorptionUnits'),
         (form.inp_source_type, 'articleSource'),
+        (form.inp_comment, 'custom'),
         (form.inp_digitizer, 'digitizer'),
     ]
     for (inp, key) in mappings:
