@@ -65,6 +65,7 @@ def prepare_isotherm_dict(form):
         data['compositionType'] = 'molefraction'  # default for single-component isotherm
         data['concentrationUnits'] = None
     data['articleSource'] = form.inp_source_type.value
+    data['custom'] = form.inp_comment.value
     if form.inp_tabular.value:
         data['tabular_data'] = True
     data['digitizer'] = form.inp_digitizer.value

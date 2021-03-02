@@ -61,6 +61,8 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_source_type = pw.TextInput(name='Source description', placeholder='Figure 1a')
         self.inp_tabular = pw.Checkbox(name='Tabular Data (i.e., not digitized from a graphical source)')
         self.inp_digitizer = pw.TextInput(name='Digitized by', placeholder='Your full name')
+        self.inp_comment = pw.TextInput(name='Comment',
+                                        placeholder='E.g. synthesis conditions & other background information.')
 
         # fill form from JSON upload
         self.inp_json = pw.FileInput(name='Upload JSON Isotherm')
@@ -84,6 +86,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
             self.inp_doi,
             pn.pane.HTML('<hr>'),
             self.inp_source_type,
+            self.inp_comment,
             pn.Row(pn.pane.HTML("""Attach Figure Graphics"""), self.inp_figure_image),
             self.inp_measurement_type,
             self.inp_adsorbent,
