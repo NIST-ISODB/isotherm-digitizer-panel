@@ -4,7 +4,7 @@
     "species_data": [
       {
         "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
-        "composition": "1.0",
+        "composition": 1.0,
         "adsorption": 0.1127
       }
     ],
@@ -15,7 +15,7 @@
     "species_data": [
       {
         "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
-        "composition": "1.0",
+        "composition": 1.0,
         "adsorption": 0.3133
       }
     ],
@@ -26,7 +26,7 @@
     "species_data": [
       {
         "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
-        "composition": "1.0",
+        "composition": 1.0,
         "adsorption": 0.559
       }
     ],
@@ -37,7 +37,7 @@
     "species_data": [
       {
         "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
-        "composition": "1.0",
+        "composition": 1.0,
         "adsorption": 1.5469
       }
     ],
@@ -48,7 +48,7 @@
     "species_data": [
       {
         "InChIKey": "VNWKTOKETHGBQD-UHFFFAOYSA-N",
-        "composition": "1.0",
+        "composition": 1.0,
         "adsorption": 2.1537
       }
     ],
