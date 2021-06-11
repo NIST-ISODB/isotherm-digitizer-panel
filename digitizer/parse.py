@@ -10,7 +10,7 @@ from .config import find_by_name, QUANTITIES
 from . import ValidationError
 
 
-def prepare_isotherm_dict(form):
+def prepare_isotherm_dict(form):  # pylint: disable=R0912
     """Validate form contents and prepare JSON.
 
     :param form: Instance of IsothermForm
@@ -49,7 +49,13 @@ def prepare_isotherm_dict(form):
     data['isotherm_type'] = form.inp_isotherm_type.value
     data['category'] = form.inp_measurement_type.value
     form_type = 'single-component' if form.__class__.__name__ == 'IsothermSingleComponentForm' else 'multi-component'
-    data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value, data['adsorbates'], form_type=form_type)
+
+    # Parse the Isotherm Data Block(s)
+    # data['isotherm_data'] = parse_isotherm_data(form.inp_isotherm_data.value, data['adsorbates'], form_type=form_type)
+    text_to_parse = ''
+    for branch in form.inp_isotherm_data:
+        text_to_parse += branch.value
+    data['isotherm_data'] = parse_isotherm_data(text_to_parse, data['adsorbates'], form_type=form_type)
 
     data['pressureUnits'] = form.inp_pressure_units.value
     if form.inp_saturation_pressure.value:

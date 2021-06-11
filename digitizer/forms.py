@@ -12,6 +12,7 @@ from .parse import prepare_isotherm_dict, FigureImage
 from .load_json import load_isotherm_json, load_isotherm_dict
 from .footer import footer
 from .submission import Isotherm
+from .isotherm_data import IsothermDataBlocks
 
 
 class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instance-attributes
@@ -41,9 +42,10 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
         self.inp_measurement_type = pw.Select(name='Measurement type',
                                               options=['Select'] + QUANTITIES['measurement_type']['names'])
         self.inp_pressure_scale = pw.Checkbox(name='Logarithmic pressure scale')
-        self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
-                                                  height=200,
-                                                  placeholder=config.SINGLE_COMPONENT_EXAMPLE)
+        # self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
+        #                                           height=200,
+        #                                           placeholder=config.SINGLE_COMPONENT_EXAMPLE)
+        self.inp_isotherm_data = IsothermDataBlocks(multicomp=False)
         self.inp_figure_image = pw.FileInput(name='Figure snapshot')
 
         # units metadata
@@ -99,7 +101,7 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
             pn.pane.HTML("""We recommend the
                 <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>
                 for data extraction."""),
-            self.inp_isotherm_data,
+            self.inp_isotherm_data.column,
             self.inp_tabular,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
@@ -128,9 +130,9 @@ class IsothermSingleComponentForm(HasTraits):  # pylint:disable=too-many-instanc
     def required_inputs(self):
         """Required inputs."""
         return [
-            self.inp_doi, self.inp_adsorbent, self.inp_temperature, self.inp_isotherm_data, self.inp_pressure_units,
-            self.inp_adsorption_units, self.inp_source_type, self.inp_digitizer
-        ] + self.inp_adsorbates.inputs
+            self.inp_doi, self.inp_adsorbent, self.inp_temperature, self.inp_pressure_units, self.inp_adsorption_units,
+            self.inp_source_type, self.inp_digitizer
+        ] + self.inp_adsorbates.inputs + self.inp_isotherm_data.inputs
 
     def on_change_doi(self, event):
         """Warn, if DOI already known."""
@@ -232,9 +234,10 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
 
         # override fields
         self.inp_adsorbates = Adsorbates(show_controls=True, )
-        self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
-                                                  height=200,
-                                                  placeholder=config.MULTI_COMPONENT_EXAMPLE)
+        # self.inp_isotherm_data = pw.TextAreaInput(name='Isotherm Data',
+        #                                           height=200,
+        #                                           placeholder=config.MULTI_COMPONENT_EXAMPLE)
+        self.inp_isotherm_data = IsothermDataBlocks(multicomp=True)
 
         # modified prefill function
         self.btn_prefill.on_click(self.on_click_populate)
@@ -259,7 +262,7 @@ class IsothermMultiComponentForm(IsothermSingleComponentForm):  # pylint:disable
             pn.pane.HTML("""We recommend the
                 <b><a href='https://apps.automeris.io/wpd/' target="_blank">WebPlotDigitizer</a></b>
                 for data extraction."""),
-            self.inp_isotherm_data,
+            self.inp_isotherm_data.column,
             self.inp_tabular,
             pn.Row(self.btn_plot, self.btn_prefill, self.inp_json),
             self.out_info,
