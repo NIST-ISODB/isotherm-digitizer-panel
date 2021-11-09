@@ -12,6 +12,10 @@ if __name__ == '__main__':
             long_description_content_type='text/markdown',
             version='0.1.0',
             description='Isotherm digitizer for the NIST Adsorption Database.',
+            classifiers=[
+                'Programming Language :: Python', 'Programming Language :: Python :: 3.8',
+                'Programming Language :: Python :: 3.9', 'Topic :: Scientific/Engineering'
+            ],
             author='Leopold Talirz',
             author_email='leopold.talirz@gmail.com',
             #url='to/be/decided',
