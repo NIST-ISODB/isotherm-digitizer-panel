@@ -15,6 +15,12 @@ pre-commit install
 panel serve digitizer --dev digitizer/*.py
 ```
 
+## Deployment via docker
+```
+docker build . -t digitizer
+docker run --name digitizer -p 5006:5006 digitizer
+```
+
 ## Configuration
 
 Use the following environment variables to configure the digitizer

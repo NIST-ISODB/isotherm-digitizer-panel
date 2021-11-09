@@ -24,6 +24,7 @@ QUANTITY_API_MAPPING = {
 }
 QUANTITIES = {}
 for quantity, url in QUANTITY_API_MAPPING.items():
+    print(f'Fetching {url}...')
     json_data = requests.get(BASE_URL + url).json()
 
     names = []
@@ -54,7 +55,7 @@ def find_by_name(name, json):
         if name in candidates:
             return q_json
 
-    raise ValueError('JSON for {} not found.'.format(name))
+    raise ValueError(f'JSON for {name} not found.')
 
 
 def find_by_key(value, key, json):
@@ -66,7 +67,7 @@ def find_by_key(value, key, json):
         except AttributeError:
             continue
 
-    raise ValueError('JSON for {} not found.'.format(value))
+    raise ValueError(f'JSON for {value} not found.')
 
 SINGLE_COMPONENT_EXAMPLE = \
 """#pressure,adsorption
