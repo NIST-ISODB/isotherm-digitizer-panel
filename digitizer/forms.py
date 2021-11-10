@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Upload forms"""
-import panel as pn
-import panel.widgets as pw
 import bokeh.models.widgets as bw
 from traitlets import HasTraits, Instance
+import panel as pn
+import panel.widgets as pw
 
 from . import ValidationError, config, restrict_kwargs
 from .config import QUANTITIES, BIBLIO_API_URL

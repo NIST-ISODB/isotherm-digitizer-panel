@@ -88,12 +88,12 @@ class Adsorbates(collections.UserList):  # pylint: disable=R0901
         """List of inputs"""
         return [a.inp_name for a in self]
 
-    def append(self, adsorbate):  # pylint: disable=W0221
+    def append(self, item):  # pylint: disable=W0221
         """Add new adsorbate."""
-        self.data.append(adsorbate)
-        self._column.append(adsorbate.row)
+        self.data.append(item)
+        self._column.append(item.row)
 
-    def remove(self, adsorbate):  # pylint: disable=W0221
+    def remove(self, item):  # pylint: disable=W0221
         """Remove adsorbate from list."""
-        self.data.remove(adsorbate)
-        self._column.remove(adsorbate.row)
+        self.data.remove(item)
+        self._column.remove(item.row)
