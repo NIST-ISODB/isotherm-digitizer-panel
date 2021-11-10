@@ -8,7 +8,7 @@ from .forms import IsothermSingleComponentForm, IsothermMultiComponentForm
 from .config import TEMPLATES_DIR
 
 # load CSS
-with open(os.path.join(TEMPLATES_DIR, 'style.css')) as handle:
+with open(os.path.join(TEMPLATES_DIR, 'style.css'), encoding='utf8') as handle:
     css = handle.read()
 pn.extension(raw_css=[css])
 

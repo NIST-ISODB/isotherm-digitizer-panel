@@ -5,10 +5,10 @@ import uuid
 import os
 import zipfile
 from traitlets import HasTraits, Instance
+import pydenticon
 
 import panel as pn
 import panel.widgets as pw
-import pydenticon
 
 from .config import SUBMISSION_FOLDER
 

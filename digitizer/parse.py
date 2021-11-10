@@ -78,7 +78,7 @@ def prepare_isotherm_dict(form):
     # strftime is not strictly necessary but ensures correct YYYY-MM-DD format
 
     # Sanitize keys from optional menus
-    for key in data:
+    for key in data:  # pylint: disable=consider-using-dict-items
         if data[key] == 'Select':
             data[key] = None
 

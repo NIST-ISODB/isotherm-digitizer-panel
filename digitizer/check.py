@@ -2,9 +2,9 @@
 """Isotherm plotting."""
 from io import StringIO
 from traitlets import HasTraits, observe, Instance
-import panel as pn
 import bokeh.models as bmd
 from bokeh.plotting import figure
+import panel as pn
 
 from .submission import Submissions, Isotherm
 from .footer import footer
